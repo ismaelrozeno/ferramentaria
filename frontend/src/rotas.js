@@ -1,0 +1,59 @@
+// Páginas do sistema, na ordem do menu lateral.
+// `pronta: false` = a página ainda não foi construída (mostra "Em construção").
+export const gruposDoMenu = [
+  {
+    nome: 'Operação',
+    rotas: [
+      { caminho: '/', titulo: 'Dashboard', icone: 'painel', pronta: true },
+      {
+        caminho: '/catalogo',
+        titulo: 'Catálogo',
+        icone: 'ferramenta',
+        descricao: 'Lista de ferramentas e materiais, com busca por código ou nome e filtros por status, categoria e origem.',
+      },
+      {
+        caminho: '/balcao',
+        titulo: 'Balcão',
+        icone: 'balcao',
+        descricao: 'Retirada e devolução com leitor de código de barras e confirmação pela digital do colaborador.',
+      },
+      {
+        caminho: '/ranking',
+        titulo: 'Ranking',
+        icone: 'ranking',
+        descricao: 'Pontos, sequências e ligas semanais dos colaboradores.',
+      },
+    ],
+  },
+  {
+    nome: 'Cadastros',
+    rotas: [
+      {
+        caminho: '/colaboradores',
+        titulo: 'Colaboradores',
+        icone: 'colaboradores',
+        descricao: 'Quem retira ferramentas no balcão: matrícula, equipe e cadastro da digital.',
+      },
+      {
+        caminho: '/cadastros',
+        titulo: 'Categorias e locais',
+        icone: 'cadastros',
+        descricao: 'Categorias com sigla de 3 letras (usadas no código FER-ELE-0001) e locais: almoxarifados, obras e setores.',
+      },
+      {
+        caminho: '/usuarios',
+        titulo: 'Usuários',
+        icone: 'usuarios',
+        descricao: 'Contas de administradores e almoxarifes que entram no sistema.',
+      },
+      {
+        caminho: '/configuracoes',
+        titulo: 'Configurações',
+        icone: 'configuracoes',
+        descricao: 'Dias para considerar uma ferramenta parada, alertas de locação e regras de pontuação.',
+      },
+    ],
+  },
+]
+
+export const todasAsRotas = gruposDoMenu.flatMap((grupo) => grupo.rotas)

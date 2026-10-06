@@ -1,0 +1,162 @@
+.card {
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.secao {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.secao + .secao {
+  margin-top: var(--space-7);
+}
+
+.secao-cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+
+.secao-cabecalho p {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* Indicadores do dashboard */
+.grade-indicadores {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(210px, 100%), 1fr));
+  gap: var(--space-4);
+}
+
+.indicador {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 116px;
+}
+
+.indicador-nome {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.indicador-valor {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.indicador-valor[data-vazio="true"] {
+  color: #525252;
+}
+
+.indicador-detalhe {
+  margin-top: auto;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.indicador[data-tom="alerta"] .indicador-valor:not([data-vazio="true"]) {
+  color: var(--warning);
+}
+
+.indicador[data-tom="perigo"] .indicador-valor:not([data-vazio="true"]) {
+  color: var(--danger);
+}
+
+/* Primeiros passos: uma sequência real, por isso numerada */
+.passos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: passo;
+}
+
+.passo {
+  counter-increment: passo;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  height: 100%;
+  text-decoration: none;
+  transition: border-color 120ms;
+}
+
+.passo:hover {
+  border-color: var(--primary-soft);
+}
+
+.passo::before {
+  content: counter(passo);
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-bottom: var(--space-2);
+  border-radius: 50%;
+  border: 1px solid var(--primary-soft);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.passo p {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* Página ainda não construída */
+.em-breve {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  max-width: 560px;
+}
+
+.em-breve p {
+  color: var(--text-muted);
+}
+
+/* Botões */
+.botao {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 10px var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.botao-primario {
+  background: var(--primary);
+  color: var(--bg);
+}
+
+.botao-primario:hover {
+  background: var(--primary-soft);
+}
+
+.botao-secundario {
+  border-color: var(--border);
+  background: transparent;
+  color: var(--text);
+}
+
+.botao-secundario:hover {
+  border-color: var(--text-muted);
+}
