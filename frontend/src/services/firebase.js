@@ -1,5 +1,10 @@
 import { initializeApp } from 'firebase/app'
-import { connectAuthEmulator, getAuth } from 'firebase/auth'
+import {
+  browserLocalPersistence,
+  connectAuthEmulator,
+  indexedDBLocalPersistence,
+  initializeAuth,
+} from 'firebase/auth'
 
 // Configuração pública do app web (identifica o projeto; não é senha).
 // O navegador usa o Firebase só para o login: os dados passam sempre pela API.
@@ -10,7 +15,11 @@ const app = initializeApp({
   appId: '1:939318568928:web:e591757147d537d323ed85',
 })
 
-export const auth = getAuth(app)
+// O login fica salvo no navegador: a pessoa continua logada depois de fechar
+// a aba ou reiniciar o computador, até clicar em "Sair".
+export const auth = initializeAuth(app, {
+  persistence: [indexedDBLocalPersistence, browserLocalPersistence],
+})
 auth.languageCode = 'pt-BR'
 
 // No computador de desenvolvimento, o login usa o emulador (contas de teste).
