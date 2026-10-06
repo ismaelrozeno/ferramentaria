@@ -25,6 +25,30 @@ ferramentaria/
 └── docs/                    decisões, requisitos, links do Figma
 ```
 
+## Como rodar
+
+Precisa do Node 20+. Em dois terminais:
+
+```bash
+# Terminal 1 — API (http://localhost:3001)
+cd backend
+npm install
+npm run dev
+
+# Terminal 2 — front (http://localhost:5173)
+cd frontend
+npm install
+npm run dev
+```
+
+Em desenvolvimento, o front encaminha `/api` para a API (proxy no `vite.config.js`).
+
+| Comando | Onde | O que faz |
+|---|---|---|
+| `npm test` | backend | roda os testes (Jest + Supertest) |
+| `npm run lint` | frontend | verifica o código (ESLint) |
+| `npm run build` | frontend | gera a versão de produção em `dist/` |
+
 ## Fluxo de desenvolvimento
 
 1. Design no Figma
