@@ -141,6 +141,7 @@
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
+  transition: background-color 150ms, border-color 150ms, color 150ms;
 }
 
 .botao-primario {
@@ -159,5 +160,7 @@
 }
 
 .botao-secundario:hover {
-  border-color: var(--text-muted);
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--bg);
 }

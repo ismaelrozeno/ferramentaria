@@ -62,8 +62,12 @@
 }
 
 .menu-link:hover {
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.04);
+  color: var(--bg);
+  background: var(--primary);
+}
+
+.menu-link:hover .icone {
+  color: var(--bg);
 }
 
 .menu-link.active {
@@ -84,6 +88,15 @@
 
 .menu-link.active .icone {
   color: var(--primary);
+}
+
+.menu-link.active:hover {
+  color: var(--bg);
+  background: var(--primary);
+}
+
+.menu-link.active:hover .icone {
+  color: var(--bg);
 }
 
 .menu-rodape {
