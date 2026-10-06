@@ -724,3 +724,59 @@
 .botao-olho[aria-pressed='true']:hover {
   color: var(--bg);
 }
+
+/* ---------- Janela de confirmação ---------- */
+.confirmacao {
+  width: min(440px, calc(100vw - 32px));
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.confirmacao::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(2px);
+}
+
+.confirmacao[open] {
+  animation: confirmacao-entrar 160ms ease-out;
+}
+
+@keyframes confirmacao-entrar {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+.confirmacao-caixa {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-6);
+}
+
+.confirmacao-caixa p {
+  color: var(--text-muted);
+}
+
+.confirmacao-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.botao-perigo-cheio {
+  border-color: var(--danger);
+  background: var(--danger);
+  color: var(--bg);
+}
+
+.botao-perigo-cheio:hover {
+  border-color: #dc2626;
+  background: #dc2626;
+}

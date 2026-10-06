@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
+import Confirmacao from '../components/Confirmacao.jsx'
 import { useAuth } from '../contexto/auth.js'
 import { api } from '../services/api.js'
 
@@ -11,6 +12,7 @@ function Usuarios() {
   const queryClient = useQueryClient()
   const [form, setForm] = useState(vazio)
   const [criado, setCriado] = useState(null)
+  const [paraDesativar, setParaDesativar] = useState(null)
   const mudar = (campo) => (e) => setForm((atual) => ({ ...atual, [campo]: e.target.value }))
 
   const usuarios = useQuery({ queryKey: ['usuarios'], queryFn: () => api.get('/usuarios') })
@@ -123,7 +125,9 @@ function Usuarios() {
                         <button
                           type="button"
                           className="botao botao-secundario botao-pequeno"
-                          onClick={() => alterar.mutate({ uid: u.id, dados: { ativo: !u.ativo } })}
+                          onClick={() =>
+                            u.ativo ? setParaDesativar(u) : alterar.mutate({ uid: u.id, dados: { ativo: true } })
+                          }
                         >
                           {u.ativo ? 'Desativar' : 'Reativar'}
                         </button>
@@ -136,6 +140,19 @@ function Usuarios() {
           )}
         </section>
       </div>
+
+      <Confirmacao
+        aberta={Boolean(paraDesativar)}
+        titulo={`Desativar ${paraDesativar?.nome ?? ''}?`}
+        mensagem="A pessoa perde o acesso ao FERRUM na hora. Você pode reativar depois."
+        textoConfirmar="Desativar usuário"
+        perigo
+        carregando={alterar.isPending}
+        aoCancelar={() => setParaDesativar(null)}
+        aoConfirmar={() =>
+          alterar.mutate({ uid: paraDesativar.id, dados: { ativo: false } }, { onSettled: () => setParaDesativar(null) })
+        }
+      />
     </>
   )
 }

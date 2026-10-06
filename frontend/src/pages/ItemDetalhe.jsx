@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
+import { useState } from 'react'
+import Confirmacao from '../components/Confirmacao.jsx'
 import EtiquetaCodigoDeBarras from '../components/EtiquetaCodigoDeBarras.jsx'
 import EtiquetaStatus from '../components/EtiquetaStatus.jsx'
 import { useAuth } from '../contexto/auth.js'
@@ -22,6 +24,7 @@ function ItemDetalhe() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { ehAdmin } = useAuth()
+  const [confirmandoDesativar, setConfirmandoDesativar] = useState(false)
   const recemCriado = parametros.get('novo') === '1'
 
   const item = useQuery({ queryKey: ['item', id], queryFn: () => api.get(`/itens/${id}`) })
@@ -186,12 +189,20 @@ function ItemDetalhe() {
           type="button"
           className="botao botao-perigo"
           disabled={desativar.isPending}
-          onClick={() => {
-            if (window.confirm(`Desativar ${dados.codigo}? Ele sai do catálogo.`)) desativar.mutate()
-          }}
+          onClick={() => setConfirmandoDesativar(true)}
         >
           Desativar item
         </button>
+        <Confirmacao
+          aberta={confirmandoDesativar}
+          titulo={`Desativar ${dados.codigo}?`}
+          mensagem={`${dados.nome} sai do catálogo. O histórico de movimentações continua guardado.`}
+          textoConfirmar="Desativar item"
+          perigo
+          carregando={desativar.isPending}
+          aoCancelar={() => setConfirmandoDesativar(false)}
+          aoConfirmar={() => desativar.mutate(undefined, { onSettled: () => setConfirmandoDesativar(false) })}
+        />
         {desativar.isError && (
           <p className="mensagem-erro" role="alert">
             {desativar.error.message}
