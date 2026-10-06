@@ -1,17 +1,13 @@
-import { Link, NavLink } from 'react-router'
+import { NavLink } from 'react-router'
 import { gruposDoMenu } from '../rotas.js'
 import Icone from './Icone.jsx'
+import Marca from './Marca.jsx'
 import StatusApi from './StatusApi.jsx'
 
 function Menu({ aberto, aoNavegar }) {
   return (
     <aside className="menu" id="menu-lateral" data-aberto={aberto}>
-      <Link to="/" className="marca" onClick={aoNavegar}>
-        <span className="marca-simbolo">
-          <Icone nome="ferramenta" tamanho={18} />
-        </span>
-        Ferramentaria
-      </Link>
+      <Marca aoClicar={aoNavegar} />
 
       <nav aria-label="Menu principal">
         {gruposDoMenu.map((grupo) => (

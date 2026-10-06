@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { Link, Outlet } from 'react-router'
+import { Outlet } from 'react-router'
 import Icone from './Icone.jsx'
+import Marca from './Marca.jsx'
 import Menu from './Menu.jsx'
 
 function Layout() {
@@ -14,12 +15,7 @@ function Layout() {
       </a>
 
       <header className="topo">
-        <Link to="/" className="marca" onClick={fecharMenu}>
-          <span className="marca-simbolo">
-            <Icone nome="ferramenta" tamanho={18} />
-          </span>
-          Ferramentaria
-        </Link>
+        <Marca aoClicar={fecharMenu} />
         <button
           type="button"
           className="botao-menu"

@@ -27,14 +27,11 @@
   text-decoration: none;
 }
 
-.marca-simbolo {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-sm);
-  background: var(--primary);
-  color: var(--bg);
+.marca-logo {
+  display: block;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
 }
 
 .menu-grupo {
