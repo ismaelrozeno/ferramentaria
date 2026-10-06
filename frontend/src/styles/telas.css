@@ -1,0 +1,528 @@
+/* ---------- Textos de apoio e mensagens ---------- */
+.texto-apoio {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.mensagem-erro {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-sm);
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--text);
+}
+
+.aviso-sucesso {
+  margin-bottom: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-sm);
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.estado-vazio {
+  padding: var(--space-4);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+}
+
+.estado-vazio-grande {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.cabecalho-com-acao {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.cabecalho-com-acao p {
+  margin-top: var(--space-1);
+}
+
+.trilha {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.trilha a {
+  color: var(--accent);
+}
+
+/* ---------- Campos de formulário ---------- */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.campo > span {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.campo input,
+.campo select {
+  width: 100%;
+  height: 42px;
+  padding: 0 var(--space-3);
+  border: 1px solid #3a3a3a;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.campo input::placeholder {
+  color: #8a8a8a;
+}
+
+.campo input:focus,
+.campo select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+}
+
+.campo input[type='date'] {
+  color-scheme: dark;
+}
+
+.form-linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
+
+.form-linha .campo {
+  flex: 1 1 140px;
+}
+
+.form-linha .campo-sigla {
+  flex: 0 0 88px;
+}
+
+.form-linha .campo-tipo {
+  flex: 0 1 170px;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-width: 880px;
+}
+
+.grade-campos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+  gap: var(--space-4);
+}
+
+.campo-largo {
+  grid-column: 1 / -1;
+}
+
+.escolha-tipo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.escolha-tipo legend {
+  margin-bottom: var(--space-3);
+  font-weight: 600;
+}
+
+.opcao {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 150ms, background-color 150ms;
+}
+
+.opcao span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.opcao strong {
+  color: var(--text);
+  font-size: 15px;
+}
+
+.opcao input {
+  accent-color: var(--primary);
+}
+
+.opcao:has(input:checked) {
+  border-color: var(--primary);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.acoes-formulario {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+/* ---------- Botões extras ---------- */
+.botao:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.botao-pequeno {
+  padding: 6px var(--space-3);
+  font-size: 14px;
+}
+
+.botao-perigo {
+  border-color: var(--danger);
+  background: transparent;
+  color: var(--text);
+}
+
+.botao-perigo:hover {
+  background: var(--danger);
+  color: var(--bg);
+}
+
+/* ---------- Tabelas ---------- */
+.card-tabela {
+  padding: 0;
+  overflow-x: auto;
+}
+
+.contagem {
+  padding: var(--space-4) var(--space-5) 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.tabela th {
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.tabela td {
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--border);
+}
+
+.tabela tr:last-child td {
+  border-bottom: 0;
+}
+
+.tabela tr[data-inativo='true'] td {
+  color: var(--text-muted);
+}
+
+.tabela a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.tabela-clicavel tbody tr {
+  cursor: pointer;
+  transition: background-color 120ms;
+}
+
+.tabela-clicavel tbody tr:hover {
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.celula-acao {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.secao-cadastro .tabela th,
+.secao-cadastro .tabela td {
+  padding-left: 0;
+}
+
+/* ---------- Status ---------- */
+.etiqueta-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border: 1px solid;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.etiqueta-status[data-status='disponivel'] {
+  border-color: var(--primary);
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--accent);
+}
+
+.etiqueta-status[data-status='em_uso'] {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+.etiqueta-status[data-status='parada'] {
+  border-color: var(--warning);
+  background: rgba(250, 204, 21, 0.15);
+  color: var(--warning);
+}
+
+.etiqueta-status[data-status='manutencao'] {
+  border-color: var(--warning);
+  color: var(--warning);
+}
+
+/* ---------- Páginas ---------- */
+.grade-cadastros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.secao-cadastro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.filtros {
+  display: grid;
+  grid-template-columns: 2fr repeat(4, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.codigo-destaque {
+  color: var(--accent);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.grade-detalhe {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: var(--space-5);
+  align-items: start;
+  margin-bottom: var(--space-7);
+}
+
+.grade-detalhe h2 {
+  margin-bottom: var(--space-4);
+}
+
+.coluna-lateral {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.lista-dados {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr));
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.dado dt {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.dado dd {
+  margin: 2px 0 0;
+  font-weight: 500;
+}
+
+.area-etiqueta {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+}
+
+.etiqueta-impressao {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: #000000;
+  text-align: center;
+}
+
+.etiqueta-impressao svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.etiqueta-marca {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.etiqueta-nome {
+  margin-bottom: 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.zona-perigo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-7);
+  padding: var(--space-5);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  border-radius: var(--radius);
+}
+
+.zona-perigo .mensagem-erro {
+  flex-basis: 100%;
+}
+
+@media (max-width: 1100px) {
+  .filtros {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .campo-busca {
+    grid-column: 1 / -1;
+  }
+
+  .grade-detalhe {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.tabela .numero {
+  white-space: nowrap;
+}
+
+/* Catálogo no celular: cartões no lugar da tabela */
+.lista-cartoes {
+  display: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cartao-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--border);
+  text-decoration: none;
+  transition: background-color 120ms;
+}
+
+.cartao-item:hover {
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.cartao-item-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.cartao-item-codigo {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.cartao-item-nome {
+  font-weight: 600;
+}
+
+.cartao-item-info {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 700px) {
+  .tabela-clicavel {
+    display: none;
+  }
+
+  .lista-cartoes {
+    display: block;
+    margin-top: var(--space-3);
+  }
+
+  .filtros {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .tabela th,
+  .tabela td {
+    padding: var(--space-3);
+  }
+}
+
+/* ---------- Impressão: só a etiqueta ---------- */
+@media print {
+  body {
+    background: #ffffff;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .etiqueta-impressao,
+  .etiqueta-impressao * {
+    visibility: visible;
+  }
+
+  .etiqueta-impressao {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 4mm;
+  }
+}

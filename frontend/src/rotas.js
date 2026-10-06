@@ -8,6 +8,7 @@ export const gruposDoMenu = [
       {
         caminho: '/catalogo',
         titulo: 'Catálogo',
+        pronta: true,
         icone: 'ferramenta',
         descricao: 'Lista de ferramentas e materiais, com busca por código ou nome e filtros por status, categoria e origem.',
       },
@@ -37,6 +38,7 @@ export const gruposDoMenu = [
       {
         caminho: '/cadastros',
         titulo: 'Categorias e locais',
+        pronta: true,
         icone: 'cadastros',
         descricao: 'Categorias com sigla de 3 letras (usadas no código FER-ELE-0001) e locais: almoxarifados, obras e setores.',
       },

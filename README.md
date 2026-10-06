@@ -27,29 +27,36 @@ ferramentaria/
 
 ## Como rodar
 
-Precisa do Node 20+ e do Java 21 (para o emulador do Firebase). Em três terminais:
+Precisa do Node 20+ e do Java 21 (para o emulador do Firebase).
 
 ```bash
-# Terminal 0 — emulador do Firebase (Firestore :8080, Auth :9099, painel http://localhost:4000)
+# Uma vez: instalar as dependências
 npm install
-npm run emulators
+npm --prefix backend install
+npm --prefix frontend install
 
-# Terminal 1 — API (http://localhost:3001)
-cd backend
-npm install
-npm run dev
-
-# Terminal 2 — front (http://localhost:5173)
-cd frontend
-npm install
+# Sobe tudo junto: emulador, API e front
 npm run dev
 ```
 
-Em desenvolvimento, o front encaminha `/api` para a API (proxy no `vite.config.js`).
+Abra **http://localhost:5173**. O painel do emulador (dados e usuários de teste) fica em http://localhost:4000.
+
+Na primeira vez, com o `npm run dev` rodando, crie categorias e locais de exemplo em outro terminal:
+
+```bash
+npm run exemplo
+```
+
+Os dados do emulador ficam salvos em `emulator-data/` ao fechar com Ctrl+C e voltam na próxima vez.
+Fora da nuvem a API **sempre** usa o emulador; o banco de produção nunca é tocado.
+Enquanto o login não existe, a API trata o acesso local como administrador (`backend/desenvolvimento.env`).
 
 | Comando | Onde | O que faz |
 |---|---|---|
-| `npm test` | backend | roda os testes (Jest + Supertest) |
+| `npm run dev` | raiz | sobe emulador, API (:3001) e front (:5173) |
+| `npm run exemplo` | raiz | cria categorias ELE, MAN, MED e dois locais de exemplo |
+| `npm test` | raiz ou backend | sobe um emulador próprio e roda os testes (feche o `npm run dev` antes) |
+| `npm run test:rapido` | backend | roda os testes no emulador que já está ligado, sem apagar seus dados |
 | `npm run lint` | frontend | verifica o código (ESLint) |
 | `npm run build` | frontend | gera a versão de produção em `dist/` |
 

@@ -3,9 +3,13 @@
   "private": true,
   "description": "Sistema de Ferramentaria (raiz: ferramentas do Firebase)",
   "scripts": {
-    "emulators": "firebase emulators:start --project ferramentaria-68f52"
+    "dev": "concurrently -k -n banco,api,front -c green,cyan,magenta \"npm run emulators\" \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+    "emulators": "node scripts/emuladores.js",
+    "test": "npm --prefix backend test",
+    "exemplo": "npm --prefix backend run exemplo"
   },
   "devDependencies": {
+    "concurrently": "^10.0.5",
     "firebase-tools": "^15.32.1"
   }
 }

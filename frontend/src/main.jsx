@@ -8,6 +8,7 @@ import './styles/global.css'
 import './styles/layout.css'
 import './styles/componentes.css'
 import './styles/fundo.css'
+import './styles/telas.css'
 
 const queryClient = new QueryClient({
   defaultOptions: {

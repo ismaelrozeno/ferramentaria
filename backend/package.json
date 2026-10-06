@@ -8,8 +8,10 @@
   },
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
-    "test": "jest"
+    "dev": "node --watch --env-file=desenvolvimento.env src/server.js",
+    "test": "node ../node_modules/firebase-tools/lib/bin/firebase.js emulators:exec --config ../firebase.json --only firestore,auth --project demo-ferrum-testes \"jest --runInBand\"",
+    "test:rapido": "jest --runInBand",
+    "exemplo": "node scripts/dados-exemplo.js"
   },
   "type": "commonjs",
   "dependencies": {
@@ -22,8 +24,13 @@
   },
   "devDependencies": {
     "jest": "^30.5.2",
-    "nodemon": "^3.1.14",
     "supertest": "^7.3.1"
   },
-  "private": true
+  "private": true,
+  "jest": {
+    "testEnvironment": "node",
+    "setupFiles": [
+      "<rootDir>/tests/setup.js"
+    ]
+  }
 }
