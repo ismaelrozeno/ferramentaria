@@ -35,6 +35,9 @@ function Layout() {
         <div className="conteudo-interno">
           <Outlet />
         </div>
+        <footer className="rodape">
+          © {new Date().getFullYear()} Issell Informática. Todos os direitos reservados.
+        </footer>
       </main>
     </div>
   )

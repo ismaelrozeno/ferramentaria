@@ -24,6 +24,7 @@
   padding: 0 var(--space-2);
   font-size: 17px;
   font-weight: 600;
+  letter-spacing: 0.08em;
   text-decoration: none;
 }
 
@@ -123,13 +124,26 @@
 
 /* Conteúdo */
 .conteudo {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   margin-left: var(--sidebar-width);
-  padding: var(--space-6) var(--space-6) var(--space-7);
+  padding: var(--space-6) var(--space-6) var(--space-5);
 }
 
 .conteudo-interno {
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.rodape {
+  max-width: 1200px;
+  width: 100%;
+  margin: auto auto 0;
+  padding-top: var(--space-7);
+  font-size: 14px;
+  color: var(--text-muted);
 }
 
 .cabecalho-pagina {

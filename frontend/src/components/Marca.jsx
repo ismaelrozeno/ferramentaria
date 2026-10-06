@@ -5,7 +5,7 @@ function Marca({ aoClicar }) {
   return (
     <Link to="/" className="marca" onClick={aoClicar}>
       <img src={logo} alt="" className="marca-logo" width="36" height="36" />
-      Ferramentaria
+      FERRUM
     </Link>
   )
 }
