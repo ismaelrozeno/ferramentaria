@@ -13,6 +13,8 @@ const MENSAGENS_DE_LOGIN = {
   'auth/invalid-email': 'Digite um e-mail válido.',
   'auth/user-disabled': 'Seu acesso foi desativado. Fale com o administrador.',
   'auth/too-many-requests': 'Muitas tentativas seguidas. Espere alguns minutos e tente de novo.',
+  'auth/configuration-not-found': 'O login ainda não foi ativado no Firebase. Avise o administrador do sistema.',
+  'auth/operation-not-allowed': 'O login por e-mail e senha está desativado no Firebase. Avise o administrador do sistema.',
   'auth/network-request-failed': 'Sem conexão com a internet. Confira a rede e tente de novo.',
 }
 
