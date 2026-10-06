@@ -31,3 +31,6 @@ desktop.ini
 # Firebase
 .firebase/
 emulator-data/
+
+# Anotações de acesso locais (nunca vão para o GitHub)
+ACESSOS.local.md
