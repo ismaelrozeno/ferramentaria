@@ -680,3 +680,47 @@
   font-size: 14px;
   color: var(--text-muted);
 }
+
+/* ---------- Campo com botão dentro (ex.: mostrar senha) ---------- */
+.campo > label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.campo-com-botao {
+  position: relative;
+}
+
+.campo-com-botao input {
+  padding-right: 52px;
+}
+
+.botao-olho {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 34px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background-color 150ms, color 150ms;
+}
+
+.botao-olho:hover {
+  background: var(--primary);
+  color: var(--bg);
+}
+
+.botao-olho[aria-pressed='true'] {
+  color: var(--accent);
+}
+
+.botao-olho[aria-pressed='true']:hover {
+  color: var(--bg);
+}

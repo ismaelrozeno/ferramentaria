@@ -2,6 +2,7 @@ import { sendPasswordResetEmail } from 'firebase/auth'
 import { useState } from 'react'
 import { Navigate, useLocation } from 'react-router'
 import FundoOficina from '../components/FundoOficina.jsx'
+import Icone from '../components/Icone.jsx'
 import logo from '../assets/logo.png'
 import { useAuth } from '../contexto/auth.js'
 import { auth } from '../services/firebase.js'
@@ -11,6 +12,7 @@ function Login() {
   const local = useLocation()
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
+  const [mostrarSenha, setMostrarSenha] = useState(false)
   const [enviando, setEnviando] = useState(false)
   const [aviso, setAviso] = useState(null)
 
@@ -53,16 +55,28 @@ function Login() {
             <span>E-mail</span>
             <input type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} required />
           </label>
-          <label className="campo">
-            <span>Senha</span>
-            <input
-              type="password"
-              autoComplete="current-password"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-              required
-            />
-          </label>
+          <div className="campo">
+            <label htmlFor="senha">Senha</label>
+            <div className="campo-com-botao">
+              <input
+                id="senha"
+                type={mostrarSenha ? 'text' : 'password'}
+                autoComplete="current-password"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className="botao-olho"
+                aria-label={mostrarSenha ? 'Esconder senha' : 'Mostrar senha'}
+                aria-pressed={mostrarSenha}
+                onClick={() => setMostrarSenha((atual) => !atual)}
+              >
+                <Icone nome={mostrarSenha ? 'olhoFechado' : 'olho'} />
+              </button>
+            </div>
+          </div>
 
           {erro && (
             <p className="mensagem-erro" role="alert">
