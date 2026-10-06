@@ -8,7 +8,7 @@ const raiz = path.join(__dirname, '..');
 const pastaDados = path.join(raiz, 'emulator-data');
 const cli = path.join(raiz, 'node_modules', 'firebase-tools', 'lib', 'bin', 'firebase.js');
 
-const argumentos = [cli, 'emulators:start', '--project', 'ferramentaria-68f52', '--export-on-exit', pastaDados];
+const argumentos = [cli, 'emulators:start', '--only', 'auth,firestore', '--project', 'ferramentaria-68f52', '--export-on-exit', pastaDados];
 if (existsSync(path.join(pastaDados, 'firebase-export-metadata.json'))) {
   argumentos.push('--import', pastaDados);
 }
