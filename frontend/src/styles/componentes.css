@@ -43,8 +43,9 @@
 }
 
 .indicador-nome {
-  font-size: 14px;
-  color: var(--text-muted);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
 }
 
 .indicador-valor {
@@ -55,12 +56,12 @@
 }
 
 .indicador-valor[data-vazio="true"] {
-  color: #525252;
+  color: var(--text-muted);
 }
 
 .indicador-detalhe {
   margin-top: auto;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-muted);
 }
 
