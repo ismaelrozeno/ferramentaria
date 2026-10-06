@@ -212,4 +212,8 @@
   .rodape {
     text-align: center;
   }
+
+  .rodape span {
+    display: block;
+  }
 }

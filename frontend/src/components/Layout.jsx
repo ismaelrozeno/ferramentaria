@@ -36,7 +36,8 @@ function Layout() {
           <Outlet />
         </div>
         <footer className="rodape">
-          © {new Date().getFullYear()} Issell Informática. Todos os direitos reservados.
+          <span>© {new Date().getFullYear()} Issell Informática.</span>{' '}
+          <span>Todos os direitos reservados.</span>
         </footer>
       </main>
     </div>
