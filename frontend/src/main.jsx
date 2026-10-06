@@ -7,6 +7,7 @@ import './styles/tokens.css'
 import './styles/global.css'
 import './styles/layout.css'
 import './styles/componentes.css'
+import './styles/fundo.css'
 
 const queryClient = new QueryClient({
   defaultOptions: {

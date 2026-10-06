@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Outlet } from 'react-router'
+import FundoOficina from './FundoOficina.jsx'
 import Icone from './Icone.jsx'
 import Marca from './Marca.jsx'
 import Menu from './Menu.jsx'
@@ -10,6 +11,7 @@ function Layout() {
 
   return (
     <div className="app">
+      <FundoOficina />
       <a href="#conteudo" className="pular-para-conteudo">
         Pular para o conteúdo
       </a>
