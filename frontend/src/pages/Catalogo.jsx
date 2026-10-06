@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import EtiquetaStatus from '../components/EtiquetaStatus.jsx'
+import { useAuth } from '../contexto/auth.js'
 import { api } from '../services/api.js'
 import { ORIGEM, STATUS, TIPO_ITEM } from '../utils/rotulos.js'
 
@@ -13,6 +14,7 @@ function montarConsulta(filtros) {
 
 function Catalogo() {
   const navigate = useNavigate()
+  const { ehAdmin } = useAuth()
   const [filtros, setFiltros] = useState({ busca: '', tipo: '', status: '', categoriaId: '', origem: '' })
   const mudar = (campo) => (e) => setFiltros((atual) => ({ ...atual, [campo]: e.target.value }))
 
@@ -32,9 +34,11 @@ function Catalogo() {
           <h1>Catálogo</h1>
           <p>Ferramentas e materiais cadastrados.</p>
         </div>
-        <Link to="/catalogo/novo" className="botao botao-primario">
-          Cadastrar item
-        </Link>
+        {ehAdmin && (
+          <Link to="/catalogo/novo" className="botao botao-primario">
+            Cadastrar item
+          </Link>
+        )}
       </header>
 
       <div className="filtros card">
@@ -98,10 +102,16 @@ function Catalogo() {
           ) : (
             <>
               <h2>Nenhum item cadastrado</h2>
-              <p>Cadastre a primeira ferramenta: o sistema gera o código e a etiqueta.</p>
-              <Link to="/catalogo/novo" className="botao botao-primario">
-                Cadastrar item
-              </Link>
+              {ehAdmin ? (
+                <>
+                  <p>Cadastre a primeira ferramenta: o sistema gera o código e a etiqueta.</p>
+                  <Link to="/catalogo/novo" className="botao botao-primario">
+                    Cadastrar item
+                  </Link>
+                </>
+              ) : (
+                <p>O administrador ainda não cadastrou ferramentas.</p>
+              )}
             </>
           )}
         </div>

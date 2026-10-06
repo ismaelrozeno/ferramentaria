@@ -10,4 +10,9 @@ export default defineConfig({
       '/api': 'http://localhost:3001',
     },
   },
+  build: {
+    // O SDK de login do Firebase deixa o pacote em ~600 kB (143 kB comprimido),
+    // o que carrega em menos de 1 s no 4G. O aviso padrão é de 500 kB.
+    chunkSizeWarningLimit: 700,
+  },
 })

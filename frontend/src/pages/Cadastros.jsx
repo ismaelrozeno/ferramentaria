@@ -1,10 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
+import { useAuth } from '../contexto/auth.js'
 import { api } from '../services/api.js'
 import { TIPO_LOCAL } from '../utils/rotulos.js'
 
 function Categorias() {
   const queryClient = useQueryClient()
+  const { ehAdmin } = useAuth()
   const [sigla, setSigla] = useState('')
   const [nome, setNome] = useState('')
   const categorias = useQuery({ queryKey: ['categorias'], queryFn: () => api.get('/categorias') })
@@ -30,6 +32,7 @@ function Categorias() {
         <p className="texto-apoio">A sigla entra no código de cada item: FER-ELE-0001.</p>
       </div>
 
+      {ehAdmin && (
       <form
         className="form-linha"
         onSubmit={(e) => {
@@ -54,6 +57,7 @@ function Categorias() {
           Adicionar categoria
         </button>
       </form>
+      )}
       {criar.isError && <p className="mensagem-erro" role="alert">{criar.error.message}</p>}
 
       {categorias.isPending && <p className="texto-apoio">Carregando categorias…</p>}
@@ -78,9 +82,11 @@ function Categorias() {
                 <td>{categoria.nome}</td>
                 <td>{categoria.ativa ? 'Ativa' : 'Desativada'}</td>
                 <td className="celula-acao">
+                  {ehAdmin && (
                   <button type="button" className="botao botao-secundario botao-pequeno" onClick={() => alternar.mutate(categoria)}>
                     {categoria.ativa ? 'Desativar' : 'Reativar'}
                   </button>
+                  )}
                 </td>
               </tr>
             ))}
@@ -93,6 +99,7 @@ function Categorias() {
 
 function Locais() {
   const queryClient = useQueryClient()
+  const { ehAdmin } = useAuth()
   const [nome, setNome] = useState('')
   const [tipo, setTipo] = useState('almoxarifado')
   const locais = useQuery({ queryKey: ['locais'], queryFn: () => api.get('/locais') })
@@ -117,6 +124,7 @@ function Locais() {
         <p className="texto-apoio">Onde as ferramentas ficam ou são usadas: almoxarifados, obras e setores.</p>
       </div>
 
+      {ehAdmin && (
       <form
         className="form-linha"
         onSubmit={(e) => {
@@ -142,6 +150,7 @@ function Locais() {
           Adicionar local
         </button>
       </form>
+      )}
       {criar.isError && <p className="mensagem-erro" role="alert">{criar.error.message}</p>}
 
       {locais.isPending && <p className="texto-apoio">Carregando locais…</p>}
@@ -164,9 +173,11 @@ function Locais() {
                 <td>{TIPO_LOCAL[local.tipo]}</td>
                 <td>{local.ativo ? 'Ativo' : 'Desativado'}</td>
                 <td className="celula-acao">
+                  {ehAdmin && (
                   <button type="button" className="botao botao-secundario botao-pequeno" onClick={() => alternar.mutate(local)}>
                     {local.ativo ? 'Desativar' : 'Reativar'}
                   </button>
+                  )}
                 </td>
               </tr>
             ))}

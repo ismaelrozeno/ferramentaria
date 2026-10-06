@@ -1,10 +1,16 @@
 import { NavLink } from 'react-router'
+import { useAuth } from '../contexto/auth.js'
 import { gruposDoMenu } from '../rotas.js'
 import Icone from './Icone.jsx'
 import Marca from './Marca.jsx'
 import StatusApi from './StatusApi.jsx'
 
+const PERFIS = { admin: 'Administrador', almoxarife: 'Almoxarife' }
+
 function Menu({ aberto, aoNavegar }) {
+  const { usuario, sair } = useAuth()
+  const podeVer = (rota) => !rota.perfis || rota.perfis.includes(usuario?.perfil)
+
   return (
     <aside className="menu" id="menu-lateral" data-aberto={aberto}>
       <Marca aoClicar={aoNavegar} />
@@ -12,7 +18,7 @@ function Menu({ aberto, aoNavegar }) {
       <nav aria-label="Menu principal">
         {gruposDoMenu.map((grupo) => (
           <div className="menu-grupo" key={grupo.nome}>
-            {grupo.rotas.map((rota) => (
+            {grupo.rotas.filter(podeVer).map((rota) => (
               <NavLink
                 key={rota.caminho}
                 to={rota.caminho}
@@ -29,6 +35,15 @@ function Menu({ aberto, aoNavegar }) {
       </nav>
 
       <div className="menu-rodape">
+        {usuario && (
+          <div className="menu-usuario">
+            <p className="menu-usuario-nome">{usuario.nome}</p>
+            <p className="menu-usuario-perfil">{PERFIS[usuario.perfil]}</p>
+            <button type="button" className="botao botao-secundario botao-pequeno" onClick={sair}>
+              Sair
+            </button>
+          </div>
+        )}
         <StatusApi />
       </div>
     </aside>

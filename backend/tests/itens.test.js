@@ -1,7 +1,7 @@
-const { api, limparBanco, criarCategoria, ferramentaValida, consumoValido } = require('./ajuda');
+const { api, prepararBanco, criarCategoria, ferramentaValida, consumoValido } = require('./ajuda');
 
 beforeEach(async () => {
-  await limparBanco();
+  await prepararBanco();
   await criarCategoria('ELE', 'Elétricas');
 });
 

@@ -1,16 +1,31 @@
-const { emProducao } = require('../config/firebase');
+const { auth } = require('../config/firebase');
+const usuariosService = require('../services/usuariosService');
 const { ErroApi } = require('../utils/erros');
 
-// Usuário fixo enquanto o login (fatia 4) não existe. Só funciona fora da
-// nuvem e com LOGIN_DESATIVADO=true; em produção esta linha nunca é usada.
-const ADMIN_DE_TESTE = { uid: 'admin-de-teste', nome: 'Administrador (teste)', perfil: 'admin' };
+// Confere o token do Firebase Authentication (cabeçalho Authorization: Bearer <token>)
+// e carrega o cadastro do usuário em `usuarios/{uid}`.
+async function autenticar(req, res, next) {
+  const cabecalho = req.get('Authorization') ?? '';
+  const token = cabecalho.startsWith('Bearer ') ? cabecalho.slice(7) : null;
+  if (!token) throw new ErroApi(401, 'NAO_AUTENTICADO', 'Faça login para continuar.');
 
-function autenticar(req, res, next) {
-  if (!emProducao && process.env.LOGIN_DESATIVADO === 'true') {
-    req.usuario = ADMIN_DE_TESTE;
-    return next();
+  let decodificado;
+  try {
+    decodificado = await auth().verifyIdToken(token);
+  } catch {
+    throw new ErroApi(401, 'SESSAO_INVALIDA', 'Sua sessão expirou. Entre de novo.');
   }
-  throw new ErroApi(401, 'NAO_AUTENTICADO', 'Faça login para continuar.');
+
+  const usuario = await usuariosService.buscarParaLogin(decodificado);
+  if (!usuario) {
+    throw new ErroApi(403, 'SEM_CADASTRO', 'Seu login existe, mas você não está cadastrado no FERRUM. Peça acesso ao administrador.');
+  }
+  if (!usuario.ativo) {
+    throw new ErroApi(403, 'USUARIO_DESATIVADO', 'Seu acesso ao FERRUM foi desativado. Fale com o administrador.');
+  }
+
+  req.usuario = { uid: usuario.id, nome: usuario.nome, email: usuario.email, perfil: usuario.perfil };
+  next();
 }
 
 function exigirPerfil(...perfis) {

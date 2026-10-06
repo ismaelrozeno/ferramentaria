@@ -2,15 +2,14 @@
   "name": "ferramentaria-backend",
   "version": "1.0.0",
   "description": "API do Sistema de Ferramentaria",
-  "main": "src/server.js",
+  "main": "index.js",
   "directories": {
     "test": "tests"
   },
   "scripts": {
     "start": "node src/server.js",
-    "dev": "node --watch --env-file=desenvolvimento.env src/server.js",
-    "test": "node ../node_modules/firebase-tools/lib/bin/firebase.js emulators:exec --config ../firebase.json --only firestore,auth --project demo-ferrum-testes \"jest --runInBand\"",
-    "test:rapido": "jest --runInBand",
+    "dev": "node --watch src/server.js",
+    "test": "node ../node_modules/firebase-tools/lib/bin/firebase.js emulators:exec --config ../firebase.testes.json --only firestore,auth --project demo-ferrum-testes \"jest --runInBand\"",
     "exemplo": "node scripts/dados-exemplo.js"
   },
   "type": "commonjs",
@@ -31,6 +30,12 @@
     "testEnvironment": "node",
     "setupFiles": [
       "<rootDir>/tests/setup.js"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^jwks-rsa$": "<rootDir>/tests/substitutos/jwks-rsa.js"
+    }
+  },
+  "engines": {
+    "node": "22"
   }
 }

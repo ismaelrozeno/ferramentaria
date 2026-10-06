@@ -1,3 +1,5 @@
+import { auth } from './firebase.js'
+
 const BASE_URL = import.meta.env.VITE_API_URL ?? ''
 
 // Erro devolvido pela API: { erro: 'CODIGO', mensagem: 'texto para o usuário', campos?: [...] }
@@ -10,11 +12,17 @@ export class ErroApi extends Error {
 }
 
 async function requisitar(metodo, caminho, corpo) {
+  const cabecalhos = {}
+  if (corpo) cabecalhos['Content-Type'] = 'application/json'
+  // Token do login atual; o SDK do Firebase renova sozinho quando expira.
+  const token = await auth.currentUser?.getIdToken()
+  if (token) cabecalhos.Authorization = `Bearer ${token}`
+
   let resposta
   try {
     resposta = await fetch(`${BASE_URL}/api${caminho}`, {
       method: metodo,
-      headers: corpo ? { 'Content-Type': 'application/json' } : undefined,
+      headers: cabecalhos,
       body: corpo ? JSON.stringify(corpo) : undefined,
     })
   } catch {

@@ -1,5 +1,6 @@
 // Páginas do sistema, na ordem do menu lateral.
 // `pronta: false` = a página ainda não foi construída (mostra "Em construção").
+// `perfis` = só esses perfis veem o item no menu (sem `perfis`: todos).
 export const gruposDoMenu = [
   {
     nome: 'Operação',
@@ -45,12 +46,15 @@ export const gruposDoMenu = [
       {
         caminho: '/usuarios',
         titulo: 'Usuários',
+        pronta: true,
+        perfis: ['admin'],
         icone: 'usuarios',
         descricao: 'Contas de administradores e almoxarifes que entram no sistema.',
       },
       {
         caminho: '/configuracoes',
         titulo: 'Configurações',
+        perfis: ['admin'],
         icone: 'configuracoes',
         descricao: 'Dias para considerar uma ferramenta parada, alertas de locação e regras de pontuação.',
       },

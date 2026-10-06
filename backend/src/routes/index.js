@@ -2,6 +2,7 @@ const { Router } = require('express');
 const apoio = require('../controllers/cadastrosDeApoioController');
 const healthController = require('../controllers/healthController');
 const itens = require('../controllers/itensController');
+const usuarios = require('../controllers/usuariosController');
 const { autenticar, exigirPerfil } = require('../middlewares/autenticacao');
 
 const router = Router();
@@ -13,6 +14,10 @@ router.get('/health', healthController.check);
 router.use(autenticar);
 
 router.get('/me', (req, res) => res.json(req.usuario));
+
+router.get('/usuarios', somenteAdmin, usuarios.listar);
+router.post('/usuarios', somenteAdmin, usuarios.criar);
+router.patch('/usuarios/:uid', somenteAdmin, usuarios.atualizar);
 
 router.get('/categorias', apoio.listarCategorias);
 router.post('/categorias', somenteAdmin, apoio.criarCategoria);

@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import EtiquetaCodigoDeBarras from '../components/EtiquetaCodigoDeBarras.jsx'
 import EtiquetaStatus from '../components/EtiquetaStatus.jsx'
+import { useAuth } from '../contexto/auth.js'
 import { api } from '../services/api.js'
 import { formatarData, formatarMoeda } from '../utils/formatar.js'
 import { MOVIMENTACAO, ORIGEM, TIPO_ITEM, UNIDADES } from '../utils/rotulos.js'
@@ -20,6 +21,7 @@ function ItemDetalhe() {
   const [parametros] = useSearchParams()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const { ehAdmin } = useAuth()
   const recemCriado = parametros.get('novo') === '1'
 
   const item = useQuery({ queryKey: ['item', id], queryFn: () => api.get(`/itens/${id}`) })
@@ -172,6 +174,7 @@ function ItemDetalhe() {
         )}
       </section>
 
+      {ehAdmin && (
       <section className="zona-perigo">
         <div>
           <h2>Desativar item</h2>
@@ -195,6 +198,7 @@ function ItemDetalhe() {
           </p>
         )}
       </section>
+      )}
     </>
   )
 }

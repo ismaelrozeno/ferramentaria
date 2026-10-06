@@ -526,3 +526,157 @@
     padding: 4mm;
   }
 }
+
+/* ---------- Login ---------- */
+.pagina-login {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+  min-height: 100vh;
+  padding: var(--space-5) var(--space-4);
+}
+
+.cartao-login {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 400px;
+  padding: var(--space-6);
+}
+
+.login-marca {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.login-marca img {
+  border-radius: 12px;
+}
+
+.formulario-login {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.botao-largo {
+  justify-content: center;
+  width: 100%;
+  padding-block: 12px;
+}
+
+.botao-link {
+  align-self: center;
+  padding: var(--space-1);
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.botao-link:hover {
+  color: var(--text);
+}
+
+.rodape-login {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.tela-carregando {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  color: var(--text-muted);
+}
+
+/* ---------- Usuários ---------- */
+.formulario-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.formulario-vertical .botao {
+  align-self: flex-start;
+}
+
+.lista-usuarios {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.usuario-linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--border);
+}
+
+.usuario-linha[data-inativo='true'] .usuario-nome {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.usuario-nome {
+  font-weight: 600;
+}
+
+.usuario-acoes {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.usuario-acoes select {
+  height: 36px;
+  padding: 0 var(--space-2);
+  border: 1px solid #3a3a3a;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+}
+
+/* ---------- Usuário no menu ---------- */
+.menu-usuario {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+.menu-usuario-nome {
+  font-weight: 600;
+}
+
+.menu-usuario-perfil {
+  margin-bottom: var(--space-2);
+  font-size: 14px;
+  color: var(--text-muted);
+}

@@ -1,6 +1,6 @@
-const { api, limparBanco } = require('./ajuda');
+const { api, prepararBanco } = require('./ajuda');
 
-beforeEach(limparBanco);
+beforeEach(prepararBanco);
 
 describe('Categorias', () => {
   it('cria categoria com a sigla em maiúsculas', async () => {
