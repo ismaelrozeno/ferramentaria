@@ -36,7 +36,7 @@ function Usuarios() {
     <>
       <header className="cabecalho-pagina">
         <h1>Usuários</h1>
-        <p>Quem entra no FERRUM. Colaboradores não têm login: eles se identificam no balcão.</p>
+        <p>Quem entra no Ferrum. Colaboradores não têm login: eles se identificam no balcão.</p>
       </header>
 
       <div className="grade-cadastros">
@@ -144,7 +144,7 @@ function Usuarios() {
       <Confirmacao
         aberta={Boolean(paraDesativar)}
         titulo={`Desativar ${paraDesativar?.nome ?? ''}?`}
-        mensagem="A pessoa perde o acesso ao FERRUM na hora. Você pode reativar depois."
+        mensagem="A pessoa perde o acesso ao Ferrum na hora. Você pode reativar depois."
         textoConfirmar="Desativar usuário"
         perigo
         carregando={alterar.isPending}

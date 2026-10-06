@@ -27,7 +27,7 @@ describe('Login', () => {
     expect(res.body.erro).toBe('SESSAO_INVALIDA');
   });
 
-  it('recusa conta de login sem cadastro no FERRUM', async () => {
+  it('recusa conta de login sem cadastro no Ferrum', async () => {
     const { token } = await criarConta('estranho@teste.local');
     const res = await cliente(token).get('/api/me');
 

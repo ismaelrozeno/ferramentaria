@@ -49,7 +49,7 @@ function Menu({ aberto, aoNavegar }) {
         )}
         <Confirmacao
           aberta={confirmandoSaida}
-          titulo="Sair do FERRUM?"
+          titulo="Sair do Ferrum?"
           mensagem="Você vai precisar do e-mail e da senha para entrar de novo neste aparelho."
           textoConfirmar="Sair"
           aoCancelar={() => setConfirmandoSaida(false)}

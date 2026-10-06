@@ -23,7 +23,7 @@ function EtiquetaCodigoDeBarras({ codigo, nome }) {
 
   return (
     <div className="etiqueta-impressao">
-      <p className="etiqueta-marca">FERRUM</p>
+      <p className="etiqueta-marca">Ferrum</p>
       <p className="etiqueta-nome">{nome}</p>
       <svg ref={svgRef} role="img" aria-label={`Código de barras ${codigo}`} />
     </div>

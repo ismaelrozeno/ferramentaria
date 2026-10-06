@@ -36,7 +36,7 @@ function Login() {
     } catch {
       // A resposta é a mesma exista ou não a conta, para não revelar quem tem acesso.
     }
-    setAviso(`Se ${email.trim()} tiver acesso ao FERRUM, um e-mail com o link para criar uma nova senha chega em alguns minutos.`)
+    setAviso(`Se ${email.trim()} tiver acesso ao Ferrum, um e-mail com o link para criar uma nova senha chega em alguns minutos.`)
   }
 
   return (
@@ -45,7 +45,7 @@ function Login() {
       <main className="card cartao-login">
         <div className="login-marca">
           <img src={logo} alt="" width="56" height="56" />
-          <span>FERRUM</span>
+          <span>Ferrum</span>
         </div>
         <h1>Entrar</h1>
         <p className="texto-apoio">Acesso de administradores e almoxarifes.</p>

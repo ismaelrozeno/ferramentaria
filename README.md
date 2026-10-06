@@ -1,4 +1,4 @@
-# FERRUM — Sistema de Gestão de Ferramentaria
+# Ferrum — Sistema de Gestão de Ferramentaria
 
 Sistema para gestão de ferramentaria: ferramentas, empréstimos, manutenção e calibração.
 

@@ -30,7 +30,7 @@ function ProvedorAuth({ children }) {
           return
         }
         try {
-          // O login do Firebase só prova quem é; o perfil vem do cadastro no FERRUM.
+          // O login do Firebase só prova quem é; o perfil vem do cadastro no Ferrum.
           const usuario = await api.get('/me')
           setEstado({ carregando: false, usuario, erro: null })
         } catch (err) {

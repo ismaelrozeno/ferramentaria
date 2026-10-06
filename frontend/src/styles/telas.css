@@ -396,7 +396,7 @@
 .etiqueta-marca {
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: -0.01em;
 }
 
 .etiqueta-nome {
@@ -557,7 +557,7 @@
   margin-bottom: var(--space-4);
   font-size: 22px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: -0.01em;
 }
 
 .login-marca img {

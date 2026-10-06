@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef } from 'react'
 
-// Janela de confirmação no visual do FERRUM. Usa o <dialog> nativo do navegador:
+// Janela de confirmação no visual do Ferrum. Usa o <dialog> nativo do navegador:
 // prende o foco dentro da janela, fecha com Esc e escurece o fundo.
 function Confirmacao({ aberta, titulo, mensagem, textoConfirmar, perigo = false, carregando = false, aoConfirmar, aoCancelar }) {
   const dialogo = useRef(null)

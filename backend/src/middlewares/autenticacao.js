@@ -18,10 +18,10 @@ async function autenticar(req, res, next) {
 
   const usuario = await usuariosService.buscarParaLogin(decodificado);
   if (!usuario) {
-    throw new ErroApi(403, 'SEM_CADASTRO', 'Seu login existe, mas você não está cadastrado no FERRUM. Peça acesso ao administrador.');
+    throw new ErroApi(403, 'SEM_CADASTRO', 'Seu login existe, mas você não está cadastrado no Ferrum. Peça acesso ao administrador.');
   }
   if (!usuario.ativo) {
-    throw new ErroApi(403, 'USUARIO_DESATIVADO', 'Seu acesso ao FERRUM foi desativado. Fale com o administrador.');
+    throw new ErroApi(403, 'USUARIO_DESATIVADO', 'Seu acesso ao Ferrum foi desativado. Fale com o administrador.');
   }
 
   req.usuario = { uid: usuario.id, nome: usuario.nome, email: usuario.email, perfil: usuario.perfil };

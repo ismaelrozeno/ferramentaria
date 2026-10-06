@@ -6,7 +6,7 @@ const { docParaJson } = require('../utils/serializar');
 const usuarios = () => db.collection('usuarios');
 
 /**
- * Usuário do FERRUM para quem acabou de apresentar um token válido.
+ * Usuário do Ferrum para quem acabou de apresentar um token válido.
  * Exceção única: o UID em ADMIN_INICIAL_UID vira administrador no primeiro
  * acesso, para criar o primeiro admin em produção sem acesso ao banco.
  */
