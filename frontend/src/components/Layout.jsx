@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Outlet } from 'react-router'
+import BotaoVoltar from './BotaoVoltar.jsx'
 import FundoOficina from './FundoOficina.jsx'
 import Icone from './Icone.jsx'
 import Marca from './Marca.jsx'
@@ -35,6 +36,7 @@ function Layout() {
 
       <main className="conteudo" id="conteudo">
         <div className="conteudo-interno">
+          <BotaoVoltar />
           <Outlet />
         </div>
         <footer className="rodape">

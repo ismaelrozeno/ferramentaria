@@ -66,6 +66,7 @@ const caminhos = {
       <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2M3 3l18 18" />
     </>
   ),
+  voltar: <path d="M19 12H5M11 18l-6-6 6-6" />,
   menu: <path d="M4 6h16M4 12h16M4 18h16" />,
   fechar: <path d="M18 6 6 18M6 6l12 12" />,
 }
