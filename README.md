@@ -27,9 +27,13 @@ ferramentaria/
 
 ## Como rodar
 
-Precisa do Node 20+. Em dois terminais:
+Precisa do Node 20+ e do Java 21 (para o emulador do Firebase). Em três terminais:
 
 ```bash
+# Terminal 0 — emulador do Firebase (Firestore :8080, Auth :9099, painel http://localhost:4000)
+npm install
+npm run emulators
+
 # Terminal 1 — API (http://localhost:3001)
 cd backend
 npm install

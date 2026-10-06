@@ -1,0 +1,11 @@
+{
+  "name": "ferramentaria",
+  "private": true,
+  "description": "Sistema de Ferramentaria (raiz: ferramentas do Firebase)",
+  "scripts": {
+    "emulators": "firebase emulators:start --project ferramentaria-68f52"
+  },
+  "devDependencies": {
+    "firebase-tools": "^15.32.1"
+  }
+}

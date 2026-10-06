@@ -27,3 +27,7 @@ desktop.ini
 .vscode/*
 !.vscode/settings.json
 .idea/
+
+# Firebase
+.firebase/
+emulator-data/
