@@ -3,6 +3,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router'
 import App from './App.jsx'
+import ProvedorAparencia from './components/ProvedorAparencia.jsx'
 import ProvedorAuth from './components/ProvedorAuth.jsx'
 import './styles/tokens.css'
 import './styles/global.css'
@@ -21,9 +22,11 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ProvedorAuth>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <ProvedorAparencia>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </ProvedorAparencia>
       </ProvedorAuth>
     </QueryClientProvider>
   </StrictMode>,

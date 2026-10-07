@@ -146,7 +146,7 @@
 
 .botao-primario {
   background: var(--primary);
-  color: var(--bg);
+  color: var(--on-primary);
 }
 
 .botao-primario:hover {
@@ -162,5 +162,5 @@
 .botao-secundario:hover {
   border-color: var(--primary);
   background: var(--primary);
-  color: var(--bg);
+  color: var(--on-primary);
 }

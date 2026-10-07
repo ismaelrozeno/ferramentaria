@@ -8,6 +8,7 @@ import { useAuth } from '../contexto/auth.js'
 import { api } from '../services/api.js'
 import { formatarData, formatarMoeda } from '../utils/formatar.js'
 import { MOVIMENTACAO, ORIGEM, TIPO_ITEM, UNIDADES } from '../utils/rotulos.js'
+import Esqueleto from '../components/Esqueleto.jsx'
 
 function Dado({ rotulo, children }) {
   return (
@@ -39,7 +40,7 @@ function ItemDetalhe() {
     },
   })
 
-  if (item.isPending) return <p className="texto-apoio">Carregando…</p>
+  if (item.isPending) return <Esqueleto linhas={6} />
   if (item.isError) {
     return (
       <div className="card estado-vazio-grande">

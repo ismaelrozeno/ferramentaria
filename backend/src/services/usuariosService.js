@@ -75,4 +75,10 @@ async function atualizar(uid, dados, quemAltera) {
   return docParaJson(await ref.get());
 }
 
-module.exports = { buscarParaLogin, listar, criar, atualizar };
+// Mescla com o que já estava salvo: mudar só o tema não apaga a cor escolhida.
+async function atualizarPreferencias(uid, dados) {
+  await usuarios().doc(uid).set({ preferencias: dados }, { merge: true });
+  return (await usuarios().doc(uid).get()).data().preferencias;
+}
+
+module.exports = { buscarParaLogin, listar, criar, atualizar, atualizarPreferencias };

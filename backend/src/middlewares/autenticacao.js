@@ -24,7 +24,13 @@ async function autenticar(req, res, next) {
     throw new ErroApi(403, 'USUARIO_DESATIVADO', 'Seu acesso ao Ferrum foi desativado. Fale com o administrador.');
   }
 
-  req.usuario = { uid: usuario.id, nome: usuario.nome, email: usuario.email, perfil: usuario.perfil };
+  req.usuario = {
+    uid: usuario.id,
+    nome: usuario.nome,
+    email: usuario.email,
+    perfil: usuario.perfil,
+    preferencias: usuario.preferencias ?? {},
+  };
   next();
 }
 

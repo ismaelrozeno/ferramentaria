@@ -10,7 +10,8 @@ function RotaProtegida({ perfis, children }) {
   if (carregando) {
     return (
       <div className="tela-carregando" role="status">
-        Carregando…
+        <span className="spinner spinner-grande" aria-hidden="true" />
+        <span className="sr-only">Carregando…</span>
       </div>
     )
   }

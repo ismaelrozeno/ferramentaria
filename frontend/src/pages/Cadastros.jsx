@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useAuth } from '../contexto/auth.js'
 import { api } from '../services/api.js'
 import { TIPO_LOCAL } from '../utils/rotulos.js'
+import Esqueleto from '../components/Esqueleto.jsx'
 
 function Categorias() {
   const queryClient = useQueryClient()
@@ -60,7 +61,7 @@ function Categorias() {
       )}
       {criar.isError && <p className="mensagem-erro" role="alert">{criar.error.message}</p>}
 
-      {categorias.isPending && <p className="texto-apoio">Carregando categorias…</p>}
+      {categorias.isPending && <Esqueleto linhas={3} />}
       {categorias.isError && <p className="mensagem-erro">{categorias.error.message}</p>}
       {categorias.data?.length === 0 && (
         <p className="estado-vazio">Nenhuma categoria ainda. Adicione a primeira acima.</p>
@@ -153,7 +154,7 @@ function Locais() {
       )}
       {criar.isError && <p className="mensagem-erro" role="alert">{criar.error.message}</p>}
 
-      {locais.isPending && <p className="texto-apoio">Carregando locais…</p>}
+      {locais.isPending && <Esqueleto linhas={3} />}
       {locais.isError && <p className="mensagem-erro">{locais.error.message}</p>}
       {locais.data?.length === 0 && <p className="estado-vazio">Nenhum local ainda. Adicione o primeiro acima.</p>}
       {locais.data?.length > 0 && (

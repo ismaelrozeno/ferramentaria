@@ -58,6 +58,7 @@ function cliente(token) {
     get: (url) => comToken(request(app).get(url)),
     post: (url) => comToken(request(app).post(url)),
     patch: (url) => comToken(request(app).patch(url)),
+    put: (url) => comToken(request(app).put(url)),
     delete: (url) => comToken(request(app).delete(url)),
   };
 }

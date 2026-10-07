@@ -12,6 +12,20 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+    <script>
+      // Aplica a aparência salva neste navegador antes de a página aparecer (evita piscar o tema errado).
+      try {
+        var p = JSON.parse(localStorage.getItem("ferrum.aparencia")) || {};
+        var tema = p.tema || "escuro";
+        if (tema === "sistema") tema = matchMedia("(prefers-color-scheme: dark)").matches ? "escuro" : "claro";
+        var h = document.documentElement;
+        h.dataset.tema = tema;
+        h.dataset.acento = p.acento || "verde";
+        h.dataset.fundo = p.fundo || "padrao";
+        h.dataset.icones = p.icones || "acento";
+        h.dataset.menu = p.menu || "esquerda";
+      } catch (e) {}
+    </script>
     <title>Ferrum</title>
   </head>
   <body>

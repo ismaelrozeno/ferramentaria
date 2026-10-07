@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Outlet } from 'react-router'
+import { Outlet, useLocation } from 'react-router'
+import BarraProgresso from './BarraProgresso.jsx'
 import BotaoVoltar from './BotaoVoltar.jsx'
 import FundoOficina from './FundoOficina.jsx'
 import Icone from './Icone.jsx'
@@ -8,11 +9,13 @@ import Menu from './Menu.jsx'
 
 function Layout() {
   const [menuAberto, setMenuAberto] = useState(false)
+  const { pathname } = useLocation()
   const fecharMenu = () => setMenuAberto(false)
 
   return (
     <div className="app">
       <FundoOficina />
+      <BarraProgresso />
       <a href="#conteudo" className="pular-para-conteudo">
         Pular para o conteúdo
       </a>
@@ -37,7 +40,9 @@ function Layout() {
       <main className="conteudo" id="conteudo">
         <div className="conteudo-interno">
           <BotaoVoltar />
-          <Outlet />
+          <div key={pathname} className="transicao-pagina">
+            <Outlet />
+          </div>
         </div>
         <footer className="rodape">
           <span>© {new Date().getFullYear()} Issell Informática.</span>{' '}

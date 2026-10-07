@@ -1,15 +1,36 @@
-/* Tokens da identidade visual (especificação, parte 1, seção 4) */
+/* Tokens da identidade visual (especificação, parte 1, seção 4).
+   Padrão = tema escuro + verde. A tela de Configurações troca os atributos
+   data-tema, data-acento, data-fundo, data-icones e data-menu no <html>. */
 :root {
+  --scheme: dark;
+
   --bg: #0a0a0a;
   --surface: #141414;
   --border: #262626;
-  --primary: #22c55e;
-  --primary-soft: #16a34a;
-  --accent: #4ade80;
+  --border-forte: #3a3a3a;
+  --placeholder: #8a8a8a;
   --text: #f5f5f5;
   --text-muted: #d4d4d4;
+  --esqueleto-brilho: #1f1f1f;
+  --furos: rgba(255, 255, 255, 0.045);
+
+  /* --primary é só preenchimento (botões, hover): o texto sobre ele é sempre --on-primary.
+     --accent é a versão da cor para texto e ícones sobre o fundo da página. */
+  --primary: #22c55e;
+  --primary-soft: #16a34a;
+  --primary-rgb: 34 197 94;
+  --accent: #4ade80;
+  --on-primary: #0a0a0a;
+
   --warning: #facc15;
   --danger: #ef4444;
+  --ouro: #facc15;
+  --prata: #d4d4d4;
+  --bronze: #d97706;
+  --diamante: #38bdf8;
+
+  --fundo-icones: var(--primary);
+  --fundo-icones-opacidade: 0.13;
 
   --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
@@ -25,4 +46,118 @@
   --space-7: 48px;
 
   --sidebar-width: 248px;
+  --barra-altura: 64px;
+}
+
+/* ---------- Tema claro ---------- */
+html[data-tema='claro'] {
+  --scheme: light;
+
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --border: #d4d4d8;
+  --border-forte: #a1a1aa;
+  --placeholder: #71717a;
+  --text: #18181b;
+  --text-muted: #3f3f46;
+  --esqueleto-brilho: #e4e4e7;
+  --furos: rgba(0, 0, 0, 0.06);
+
+  --accent: #15803d;
+  --warning: #854d0e;
+  --danger: #b91c1c;
+  --ouro: #a16207;
+  --prata: #52525b;
+  --bronze: #b45309;
+  --diamante: #0369a1;
+
+  --fundo-icones-opacidade: 0.2;
+}
+
+/* ---------- Cor principal ---------- */
+html[data-acento='vermelho'] {
+  --primary: #ef4444;
+  --primary-soft: #f87171;
+  --primary-rgb: 239 68 68;
+  --accent: #f87171;
+}
+
+html[data-acento='azul'] {
+  --primary: #3b82f6;
+  --primary-soft: #60a5fa;
+  --primary-rgb: 59 130 246;
+  --accent: #60a5fa;
+}
+
+html[data-acento='rosa'] {
+  --primary: #ec4899;
+  --primary-soft: #f472b6;
+  --primary-rgb: 236 72 153;
+  --accent: #f472b6;
+}
+
+html[data-tema='claro'][data-acento='verde'] {
+  --accent: #166534;
+}
+
+html[data-tema='claro'][data-acento='vermelho'] {
+  --accent: #b91c1c;
+}
+
+html[data-tema='claro'][data-acento='azul'] {
+  --accent: #1d4ed8;
+}
+
+html[data-tema='claro'][data-acento='rosa'] {
+  --accent: #be185d;
+}
+
+/* ---------- Fundo da página ---------- */
+html:not([data-tema='claro'])[data-fundo='grafite'] {
+  --bg: #18181b;
+  --surface: #222226;
+  --border: #323238;
+  --border-forte: #46464e;
+  --esqueleto-brilho: #2c2c32;
+}
+
+html:not([data-tema='claro'])[data-fundo='azul'] {
+  --bg: #0b1220;
+  --surface: #121b2e;
+  --border: #1f2b45;
+  --border-forte: #31405f;
+  --esqueleto-brilho: #1a2540;
+}
+
+html:not([data-tema='claro'])[data-fundo='verde'] {
+  --bg: #07120c;
+  --surface: #0d1b13;
+  --border: #1c3326;
+  --border-forte: #2b4a38;
+  --esqueleto-brilho: #14271c;
+}
+
+html[data-tema='claro'][data-fundo='cinza'] {
+  --bg: #e4e4e7;
+  --surface: #f4f4f5;
+  --border: #c4c4cc;
+  --border-forte: #9a9aa5;
+  --esqueleto-brilho: #d4d4d8;
+}
+
+html[data-tema='claro'][data-fundo='creme'] {
+  --bg: #f6f1e7;
+  --surface: #fffaf0;
+  --border: #ddd3bd;
+  --border-forte: #b9ab8c;
+  --esqueleto-brilho: #ece3cf;
+}
+
+/* ---------- Ícones de ferramentas do fundo ---------- */
+html[data-icones='neutro'] {
+  --fundo-icones: #a3a3a3;
+}
+
+html[data-tema='claro'][data-icones='neutro'] {
+  --fundo-icones: #52525b;
 }

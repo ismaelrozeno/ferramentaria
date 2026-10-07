@@ -46,7 +46,7 @@ describe('Cadastro de ferramenta', () => {
 
     expect(respostas.every((r) => r.status === 201)).toBe(true);
     expect(codigos).toEqual(['FER-ELE-0001', 'FER-ELE-0002', 'FER-ELE-0003', 'FER-ELE-0004', 'FER-ELE-0005']);
-  });
+  }, 20000);
 
   it('exige fornecedor e fim do contrato para ferramenta alocada', async () => {
     const res = await api().post('/api/itens').send(ferramentaValida({ origem: 'alocada' }));

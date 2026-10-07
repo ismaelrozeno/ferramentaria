@@ -110,12 +110,24 @@ npx firebase deploy --only functions,hosting,firestore --project ferramentaria-6
 | Catálogo (busca sem acento, filtros) e detalhe com histórico | pronto |
 | Login, perfis, gestão de usuários, login salvo no navegador | pronto |
 | Publicação (Hosting + Function em São Paulo + Firestore) | no ar |
-| 45 testes automáticos da API | passando |
+| Colaboradores (cadastro por importação de CSV, lista, desativar) | pronto, ainda não publicado |
+| Balcão: identificação pela digital (leitor simulado), matrícula + motivo como alternativa, retirada/devolução tudo ou nada | pronto, ainda não publicado; falta o leitor real (SDK) |
+| Ranking: pontos pela devolução (10 no prazo, 3 atrasada, bônus a cada 5 seguidas), ligas por XP, `/ranking` e painel público `/painel` | pronto, ainda não publicado |
+| Configurações: tema claro/escuro/sistema, cor principal (verde, vermelho, azul, rosa), fundo, ícones do fundo, posição do menu (esquerda, direita, topo, base), link de troca de senha por e-mail | pronto, ainda não publicado |
+| 111 testes automáticos da API | passando |
+
+## Aparência (decisões)
+
+- Preferências ficam em `usuarios/{uid}.preferencias` (por usuário) e em `localStorage['ferrum.aparencia']` (evita piscar o tema errado; script em `frontend/index.html`).
+- Cores só por presets em `frontend/src/styles/tokens.css` (atributos `data-tema/acento/fundo/icones/menu` no `<html>`). `--primary` é só preenchimento (texto sobre ele é `--on-primary`, preto); `--accent` é a cor para texto/ícones sobre o fundo. Todo preset novo precisa passar WCAG 4.5:1 (texto) em todos os fundos.
+- Menu em cima/embaixo/direita só em telas largas; no celular é sempre a gaveta.
 
 ## Próximos passos (em aberto)
 
-1. **Colaboradores por importação de arquivo**: o Ismael vai enviar o formato do arquivo (colunas, Excel ou CSV).
-2. **Balcão**: retirada e devolução com leitor de código de barras e confirmação por digital (o leitor
+0. **Lixeira e exclusão (Fatia B do plano de Configurações)**: campo `excluidoEm`, `configuracoes/sistema.lixeiraAtiva`, exclusão definitiva só do admin com pop-up, histórico das movimentações preservado.
+
+1. **Importar Excel (.xlsx)** de colaboradores: hoje só CSV; o Ismael vai enviar o formato real do arquivo.
+2. **Leitor de digital real**: a tela e a API já identificam por `biometriaId`; hoje o leitor é simulado. Para o real, um programa no PC do balcão (SDK do fabricante) responde `POST {VITE_LEITOR_URL}/ler` com `{ biometriaId }` (o leitor
    biométrico precisa do SDK do fabricante no computador do balcão; modelo ainda não escolhido).
    Devolução pode ser feita por outra pessoa (`devolvidoPorId`); pontos vão para o responsável.
 3. **Demais movimentações**: entrada por compra (custo médio ponderado), alocadas, transferência,
@@ -123,7 +135,7 @@ npx firebase deploy --only functions,hosting,firestore --project ferramentaria-6
 4. **Dashboard** com os 10 indicadores e gráficos; tarefas agendadas (paradas, alertas).
 5. **BI profissional** com painéis por tema e **exportação para planilha** (gerada na API). Comparação
    "mês anterior" exige fotos mensais dos indicadores.
-6. **Gamificação** (XP, sequência, ligas) e **painel do ranking sem login** (`/painel`).
+6. **Gamificação — falta:** medalhas e promoção/rebaixamento semanal de liga (hoje a liga vem do XP total). Regras de pontos em `backend/src/services/pontuacao.js`.
 7. Telas pendentes: editar item (a API já aceita), foto da ferramenta (precisa do Storage).
 8. **Atualizar a parte 2 da especificação** com as mudanças: colaboradores sem login, Code 128 no lugar de QR,
    painel sem login, contadores com ID `FER-ELE`/`CON-ELE`, `ferramentas` sem `localId`

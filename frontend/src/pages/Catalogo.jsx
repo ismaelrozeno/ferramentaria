@@ -5,6 +5,7 @@ import EtiquetaStatus from '../components/EtiquetaStatus.jsx'
 import { useAuth } from '../contexto/auth.js'
 import { api } from '../services/api.js'
 import { ORIGEM, STATUS, TIPO_ITEM } from '../utils/rotulos.js'
+import Esqueleto from '../components/Esqueleto.jsx'
 
 function montarConsulta(filtros) {
   const params = new URLSearchParams(Object.entries(filtros).filter(([, valor]) => valor))
@@ -93,7 +94,7 @@ function Catalogo() {
       </div>
 
       {itens.isError && <p className="mensagem-erro">{itens.error.message}</p>}
-      {itens.isPending && <p className="texto-apoio">Carregando catálogo…</p>}
+      {itens.isPending && <Esqueleto linhas={6} />}
 
       {itens.data?.length === 0 && (
         <div className="card estado-vazio-grande">

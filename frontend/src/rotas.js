@@ -16,12 +16,14 @@ export const gruposDoMenu = [
       {
         caminho: '/balcao',
         titulo: 'Balcão',
+        pronta: true,
         icone: 'balcao',
         descricao: 'Retirada e devolução com leitor de código de barras e confirmação pela digital do colaborador.',
       },
       {
         caminho: '/ranking',
         titulo: 'Ranking',
+        pronta: true,
         icone: 'ranking',
         descricao: 'Pontos, sequências e ligas semanais dos colaboradores.',
       },
@@ -33,6 +35,7 @@ export const gruposDoMenu = [
       {
         caminho: '/colaboradores',
         titulo: 'Colaboradores',
+        pronta: true,
         icone: 'colaboradores',
         descricao: 'Quem retira ferramentas no balcão: matrícula, equipe e cadastro da digital.',
       },
@@ -54,9 +57,9 @@ export const gruposDoMenu = [
       {
         caminho: '/configuracoes',
         titulo: 'Configurações',
-        perfis: ['admin'],
+        pronta: true,
         icone: 'configuracoes',
-        descricao: 'Dias para considerar uma ferramenta parada, alertas de locação e regras de pontuação.',
+        descricao: 'Aparência, posição do menu e senha da sua conta.',
       },
     ],
   },

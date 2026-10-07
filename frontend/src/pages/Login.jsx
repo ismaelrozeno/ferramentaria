@@ -90,7 +90,13 @@ function Login() {
           )}
 
           <button type="submit" className="botao botao-primario botao-largo" disabled={enviando}>
-            {enviando ? 'Entrando…' : 'Entrar'}
+            {enviando ? (
+              <>
+                <span className="spinner" aria-hidden="true" /> Entrando…
+              </>
+            ) : (
+              'Entrar'
+            )}
           </button>
           <button type="button" className="botao-link" onClick={esqueciSenha}>
             Esqueci minha senha

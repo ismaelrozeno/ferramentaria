@@ -62,17 +62,17 @@
 }
 
 .menu-link:hover {
-  color: var(--bg);
+  color: var(--on-primary);
   background: var(--primary);
 }
 
 .menu-link:hover .icone {
-  color: var(--bg);
+  color: var(--on-primary);
 }
 
 .menu-link.active {
   color: var(--text);
-  background: rgba(34, 197, 94, 0.1);
+  background: rgb(var(--primary-rgb) / 0.1);
 }
 
 .menu-link.active::before {
@@ -87,16 +87,16 @@
 }
 
 .menu-link.active .icone {
-  color: var(--primary);
+  color: var(--accent);
 }
 
 .menu-link.active:hover {
-  color: var(--bg);
+  color: var(--on-primary);
   background: var(--primary);
 }
 
 .menu-link.active:hover .icone {
-  color: var(--bg);
+  color: var(--on-primary);
 }
 
 .menu-rodape {
@@ -251,5 +251,117 @@
 .botao-voltar:hover {
   border-color: var(--primary);
   background: var(--primary);
-  color: var(--bg);
+  color: var(--on-primary);
+}
+
+/* ---------- Posição do menu (telas largas; no celular o menu é sempre a gaveta) ---------- */
+@media (min-width: 901px) {
+  html[data-menu='direita'] .menu {
+    inset: 0 0 0 auto;
+    border-right: 0;
+    border-left: 1px solid var(--border);
+  }
+
+  html[data-menu='direita'] .conteudo {
+    margin-left: 0;
+    margin-right: var(--sidebar-width);
+  }
+
+  html[data-menu='direita'] .menu-link.active::before {
+    left: auto;
+    right: -16px;
+    border-radius: 3px 0 0 3px;
+  }
+
+  html[data-menu='topo'] .menu,
+  html[data-menu='base'] .menu {
+    inset: 0 0 auto 0;
+    width: auto;
+    height: var(--barra-altura);
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-5);
+    padding: 0 var(--space-5);
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    overflow: auto hidden;
+  }
+
+  html[data-menu='base'] .menu {
+    inset: auto 0 0 0;
+    border-bottom: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  html[data-menu='topo'] .conteudo,
+  html[data-menu='base'] .conteudo {
+    margin-left: 0;
+  }
+
+  html[data-menu='topo'] .conteudo {
+    margin-top: var(--barra-altura);
+  }
+
+  html[data-menu='base'] .conteudo {
+    margin-bottom: var(--barra-altura);
+  }
+
+  html[data-menu='topo'] .menu nav,
+  html[data-menu='base'] .menu nav {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  html[data-menu='topo'] .menu-grupo,
+  html[data-menu='base'] .menu-grupo {
+    flex-direction: row;
+    gap: var(--space-1);
+  }
+
+  html[data-menu='topo'] .menu-grupo + .menu-grupo,
+  html[data-menu='base'] .menu-grupo + .menu-grupo {
+    padding-top: 0;
+    padding-left: var(--space-4);
+    border-top: 0;
+    border-left: 1px solid var(--border);
+  }
+
+  html[data-menu='topo'] .menu-link,
+  html[data-menu='base'] .menu-link {
+    white-space: nowrap;
+  }
+
+  html[data-menu='topo'] .menu-link.active::before,
+  html[data-menu='base'] .menu-link.active::before {
+    display: none;
+  }
+
+  html[data-menu='topo'] .menu-rodape,
+  html[data-menu='base'] .menu-rodape {
+    margin: 0;
+    padding: 0;
+  }
+
+  html[data-menu='topo'] .menu-usuario,
+  html[data-menu='base'] .menu-usuario {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    border-top: 0;
+    white-space: nowrap;
+  }
+
+  html[data-menu='topo'] .menu-usuario-perfil,
+  html[data-menu='base'] .menu-usuario-perfil {
+    margin: 0;
+  }
+
+  html[data-menu='topo'] .status-api,
+  html[data-menu='base'] .status-api {
+    display: none;
+  }
 }

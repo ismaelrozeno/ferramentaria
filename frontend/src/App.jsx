@@ -3,12 +3,17 @@ import Layout from './components/Layout.jsx'
 import RotaProtegida from './components/RotaProtegida.jsx'
 import Cadastros from './pages/Cadastros.jsx'
 import Catalogo from './pages/Catalogo.jsx'
+import Balcao from './pages/Balcao.jsx'
+import Colaboradores from './pages/Colaboradores.jsx'
+import Configuracoes from './pages/Configuracoes.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import EmConstrucao from './pages/EmConstrucao.jsx'
 import ItemDetalhe from './pages/ItemDetalhe.jsx'
 import Login from './pages/Login.jsx'
 import NaoEncontrada from './pages/NaoEncontrada.jsx'
 import NovoItem from './pages/NovoItem.jsx'
+import Painel from './pages/Painel.jsx'
+import Ranking from './pages/Ranking.jsx'
 import Usuarios from './pages/Usuarios.jsx'
 import { todasAsRotas } from './rotas.js'
 
@@ -18,6 +23,7 @@ function App() {
   return (
     <Routes>
       <Route path="login" element={<Login />} />
+      <Route path="painel" element={<Painel />} />
       <Route
         element={
           <RotaProtegida>
@@ -30,6 +36,10 @@ function App() {
         <Route path="catalogo/novo" element={somenteAdmin(<NovoItem />)} />
         <Route path="catalogo/:id" element={<ItemDetalhe />} />
         <Route path="cadastros" element={<Cadastros />} />
+        <Route path="balcao" element={<Balcao />} />
+        <Route path="ranking" element={<Ranking />} />
+        <Route path="configuracoes" element={<Configuracoes />} />
+        <Route path="colaboradores" element={<Colaboradores />} />
         <Route path="usuarios" element={somenteAdmin(<Usuarios />)} />
         {todasAsRotas
           .filter((rota) => !rota.pronta)

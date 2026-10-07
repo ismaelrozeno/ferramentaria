@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Confirmacao from '../components/Confirmacao.jsx'
 import { useAuth } from '../contexto/auth.js'
 import { api } from '../services/api.js'
+import Esqueleto from '../components/Esqueleto.jsx'
 
 const PERFIS = { admin: 'Administrador', almoxarife: 'Almoxarife' }
 const vazio = { nome: '', email: '', perfil: 'almoxarife', senha: '' }
@@ -88,7 +89,7 @@ function Usuarios() {
 
         <section className="card secao-cadastro" aria-labelledby="titulo-lista-usuarios">
           <h2 id="titulo-lista-usuarios">Usuários cadastrados</h2>
-          {usuarios.isPending && <p className="texto-apoio">Carregando…</p>}
+          {usuarios.isPending && <Esqueleto linhas={4} />}
           {usuarios.isError && <p className="mensagem-erro">{usuarios.error.message}</p>}
           {alterar.isError && (
             <p className="mensagem-erro" role="alert">
