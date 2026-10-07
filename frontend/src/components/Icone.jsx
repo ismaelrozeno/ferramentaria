@@ -46,6 +46,12 @@ const caminhos = {
       <path d="M9 12l2 2 4-4" />
     </>
   ),
+  lixeira: (
+    <>
+      <path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14" />
+      <path d="M10 11v5M14 11v5" />
+    </>
+  ),
   configuracoes: (
     <>
       <path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0" />

@@ -9,6 +9,7 @@ import Configuracoes from './pages/Configuracoes.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import EmConstrucao from './pages/EmConstrucao.jsx'
 import ItemDetalhe from './pages/ItemDetalhe.jsx'
+import Lixeira from './pages/Lixeira.jsx'
 import Login from './pages/Login.jsx'
 import NaoEncontrada from './pages/NaoEncontrada.jsx'
 import NovoItem from './pages/NovoItem.jsx'
@@ -38,6 +39,7 @@ function App() {
         <Route path="cadastros" element={<Cadastros />} />
         <Route path="balcao" element={<Balcao />} />
         <Route path="ranking" element={<Ranking />} />
+        <Route path="lixeira" element={somenteAdmin(<Lixeira />)} />
         <Route path="configuracoes" element={<Configuracoes />} />
         <Route path="colaboradores" element={<Colaboradores />} />
         <Route path="usuarios" element={somenteAdmin(<Usuarios />)} />

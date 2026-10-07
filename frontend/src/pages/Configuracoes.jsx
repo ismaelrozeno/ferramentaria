@@ -2,6 +2,7 @@ import { sendPasswordResetEmail } from 'firebase/auth'
 import { useState } from 'react'
 import { useAparencia } from '../contexto/aparencia.js'
 import { useAuth } from '../contexto/auth.js'
+import SecaoLixeira from '../components/SecaoLixeira.jsx'
 import { auth } from '../services/firebase.js'
 import { ACENTOS, FUNDOS, ICONES, MENUS, TEMAS } from '../utils/aparencia.js'
 
@@ -26,7 +27,7 @@ function Opcoes({ legenda, nome, valor, opcoes, aoEscolher }) {
 }
 
 function Configuracoes() {
-  const { usuario } = useAuth()
+  const { usuario, ehAdmin } = useAuth()
   const { prefs, temaResolvido, erro, alterar } = useAparencia()
   const [envio, setEnvio] = useState({ estado: 'parado', mensagem: '' })
 
@@ -56,7 +57,7 @@ function Configuracoes() {
     <>
       <header className="cabecalho-pagina">
         <h1>Configurações</h1>
-        <p>Suas preferências ficam salvas na sua conta e acompanham você em qualquer computador.</p>
+        <p>Suas preferências ficam salvas na sua conta e acompanham você em qualquer aparelho.</p>
       </header>
 
       <section className="card secao-cadastro secao-config" aria-labelledby="titulo-aparencia">
@@ -78,11 +79,13 @@ function Configuracoes() {
         />
       </section>
 
-      <section className="card secao-cadastro secao-config" aria-labelledby="titulo-menu">
+      <section className="card secao-cadastro secao-config so-tela-larga" aria-labelledby="titulo-menu">
         <h2 id="titulo-menu">Menu de navegação</h2>
         <Opcoes legenda="Posição do menu" nome="menu" valor={prefs.menu} opcoes={MENUS} aoEscolher={(menu) => alterar({ menu })} />
         <p className="texto-apoio">No celular e em telas estreitas o menu é sempre a gaveta que abre pelo botão do topo.</p>
       </section>
+
+      {ehAdmin && <SecaoLixeira />}
 
       <section className="card secao-cadastro secao-config" aria-labelledby="titulo-conta">
         <h2 id="titulo-conta">Minha conta</h2>

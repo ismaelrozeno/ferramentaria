@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef } from 'react'
+import { createPortal } from 'react-dom'
 
 // Janela de confirmação no visual do Ferrum. Usa o <dialog> nativo do navegador:
 // prende o foco dentro da janela, fecha com Esc e escurece o fundo.
@@ -13,7 +14,8 @@ function Confirmacao({ aberta, titulo, mensagem, textoConfirmar, perigo = false,
     if (!aberta && el.open) el.close()
   }, [aberta])
 
-  return (
+  // Vai direto para o <body>: assim não herda estilo de onde o botão está (célula de tabela, menu etc.).
+  return createPortal(
     <dialog
       ref={dialogo}
       className="confirmacao"
@@ -44,7 +46,8 @@ function Confirmacao({ aberta, titulo, mensagem, textoConfirmar, perigo = false,
           </button>
         </div>
       </div>
-    </dialog>
+    </dialog>,
+    document.body,
   )
 }
 

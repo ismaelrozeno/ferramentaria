@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { useState } from 'react'
+import BotaoExcluir from '../components/BotaoExcluir.jsx'
 import Confirmacao from '../components/Confirmacao.jsx'
 import EtiquetaCodigoDeBarras from '../components/EtiquetaCodigoDeBarras.jsx'
 import EtiquetaStatus from '../components/EtiquetaStatus.jsx'
@@ -181,19 +182,22 @@ function ItemDetalhe() {
       {ehAdmin && (
       <section className="zona-perigo">
         <div>
-          <h2>Desativar item</h2>
+          <h2>Desativar ou excluir</h2>
           <p className="texto-apoio">
-            Use para cadastro errado ou duplicado. O histórico é mantido. Perda ou quebra é registrada como baixa.
+            Para cadastro errado ou duplicado. O histórico de movimentações é sempre mantido. Só dá com a ferramenta parada no almoxarifado, ou o consumo sem saldo. Perda ou quebra é registrada como baixa.
           </p>
         </div>
-        <button
-          type="button"
-          className="botao botao-perigo"
-          disabled={desativar.isPending}
-          onClick={() => setConfirmandoDesativar(true)}
-        >
-          Desativar item
-        </button>
+        <div className="zona-perigo-acoes">
+          <button
+            type="button"
+            className="botao botao-perigo"
+            disabled={desativar.isPending}
+            onClick={() => setConfirmandoDesativar(true)}
+          >
+            Desativar item
+          </button>
+          <BotaoExcluir tipo="itens" id={id} nome={dados.codigo} rotulo="Excluir item" pequeno={false} aoConcluir={() => navigate('/catalogo')} />
+        </div>
         <Confirmacao
           aberta={confirmandoDesativar}
           titulo={`Desativar ${dados.codigo}?`}
@@ -211,6 +215,7 @@ function ItemDetalhe() {
         )}
       </section>
       )}
+
     </>
   )
 }

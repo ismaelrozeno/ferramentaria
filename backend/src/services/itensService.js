@@ -35,6 +35,17 @@ function montarItem(itemSnap, ferramentaSnap) {
  * mesmo tempo nunca recebem o mesmo número. Ferramenta entra com saldo 1 por
  * uma movimentação de entrada (o saldo nunca é digitado).
  */
+// Regras para tirar um item de circulação (desativar ou excluir): precisa estar parado e sem saldo.
+function validarRemocaoDeItem(item, ferramenta, { participio = 'desativada', infinitivo = 'desativar' } = {}) {
+  if (item.tipo === 'ferramenta' && ferramenta?.status !== 'disponivel') {
+    const status = STATUS_LEGIVEL[ferramenta?.status] ?? 'indisponível';
+    throw conflito('ITEM_EM_USO', `A ferramenta está ${status}. Ela precisa estar disponível para ser ${participio}.`);
+  }
+  if (item.tipo === 'consumo' && item.saldo > 0) {
+    throw conflito('ITEM_COM_SALDO', `O item ainda tem saldo ${item.saldo}. Zere o saldo com uma baixa antes de ${infinitivo}.`);
+  }
+}
+
 async function criar(dados, usuario) {
   if (dados.tipo === 'ferramenta' && dados.origem === 'alocada' && (!dados.fornecedor || !dados.fimContratoLocacao)) {
     throw dadoInvalido('DADOS_INVALIDOS', 'Ferramenta alocada exige o fornecedor e a data de fim do contrato.');
@@ -52,10 +63,10 @@ async function criar(dados, usuario) {
     if (!categoria.exists) {
       throw dadoInvalido('CATEGORIA_INVALIDA', `A categoria ${dados.categoriaId} não existe.`);
     }
-    if (!categoria.data().ativa) {
+    if (!categoria.data().ativa || categoria.data().excluidoEm) {
       throw dadoInvalido('CATEGORIA_INVALIDA', `A categoria ${dados.categoriaId} está desativada.`);
     }
-    if (localRef && (!local.exists || !local.data().ativo)) {
+    if (localRef && (!local.exists || !local.data().ativo || local.data().excluidoEm)) {
       throw dadoInvalido('LOCAL_INVALIDO', 'O local escolhido não existe ou está desativado.');
     }
 
@@ -134,6 +145,7 @@ async function listar(filtros = {}) {
   const busca = normalizar(filtros.busca);
 
   return itensSnap.docs
+    .filter((doc) => !doc.data().excluidoEm)
     .map((doc) => montarItem(doc, ferramentas.get(doc.id)))
     .filter((item) => !busca || item.nomeBusca.includes(busca))
     .filter((item) => !filtros.tipo || item.tipo === filtros.tipo)
@@ -149,7 +161,7 @@ async function buscar(id) {
     col.ferramentas().doc(id).get(),
     col.movimentacoes().where('itemId', '==', id).get(),
   ]);
-  if (!itemSnap.exists) throw naoEncontrado('ITEM_NAO_ENCONTRADO', 'Item não encontrado.');
+  if (!itemSnap.exists || itemSnap.data().excluidoEm) throw naoEncontrado('ITEM_NAO_ENCONTRADO', 'Item não encontrado.');
 
   const historico = movimentacoesSnap.docs
     .map((doc) => ({ id: doc.id, ...paraJson(doc.data()) }))
@@ -209,18 +221,10 @@ async function desativar(id) {
     const ferramentaRef = col.ferramentas().doc(id);
     const [itemSnap, ferramentaSnap] = await tx.getAll(itemRef, ferramentaRef);
     if (!itemSnap.exists) throw naoEncontrado('ITEM_NAO_ENCONTRADO', 'Item não encontrado.');
-    const item = itemSnap.data();
-
-    if (item.tipo === 'ferramenta' && ferramentaSnap.data()?.status !== 'disponivel') {
-      const status = STATUS_LEGIVEL[ferramentaSnap.data()?.status] ?? 'indisponível';
-      throw conflito('ITEM_EM_USO', `A ferramenta está ${status}. Ela precisa estar disponível para ser desativada.`);
-    }
-    if (item.tipo === 'consumo' && item.saldo > 0) {
-      throw conflito('ITEM_COM_SALDO', `O item ainda tem saldo ${item.saldo}. Zere o saldo com uma baixa antes de desativar.`);
-    }
+    validarRemocaoDeItem(itemSnap.data(), ferramentaSnap.data());
 
     tx.update(itemRef, { ativo: false });
   });
 }
 
-module.exports = { criar, listar, buscar, buscarPorCodigo, atualizar, desativar };
+module.exports = { criar, listar, buscar, buscarPorCodigo, atualizar, desativar, validarRemocaoDeItem };

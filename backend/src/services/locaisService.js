@@ -7,7 +7,7 @@ const locais = () => db.collection('locais');
 
 async function listar() {
   const snap = await locais().orderBy('nome').get();
-  return snap.docs.map(docParaJson);
+  return snap.docs.filter((doc) => !doc.data().excluidoEm).map(docParaJson);
 }
 
 async function criar({ nome, tipo }) {

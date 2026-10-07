@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRef, useState } from 'react'
+import BotaoExcluir from '../components/BotaoExcluir.jsx'
 import CapturaDigital from '../components/CapturaDigital.jsx'
 import Confirmacao from '../components/Confirmacao.jsx'
 import { useAuth } from '../contexto/auth.js'
@@ -236,6 +237,7 @@ function Colaboradores() {
                       >
                         {c.ativo ? 'Desativar' : 'Reativar'}
                       </button>
+                      <BotaoExcluir tipo="colaboradores" id={c.matricula} nome={c.nome} />
                     </div>
                   )}
                 </li>

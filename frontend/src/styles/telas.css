@@ -130,6 +130,10 @@
   gap: var(--space-4);
 }
 
+.grade-campos-alinhada {
+  align-items: end;
+}
+
 .campo-largo {
   grid-column: 1 / -1;
 }
@@ -269,6 +273,11 @@
   white-space: nowrap;
 }
 
+/* Botões lado a lado numa célula da tabela (ex.: Desativar e Excluir) */
+.celula-acao .botao + .botao {
+  margin-left: var(--space-3);
+}
+
 .secao-cadastro .tabela th,
 .secao-cadastro .tabela td {
   padding-left: 0;
@@ -320,6 +329,13 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+}
+
+/* Cartões empilhados na mesma página (Configurações, Balcão, Ranking, Lixeira...) respiram entre si */
+.transicao-pagina > .secao-cadastro + .secao-cadastro,
+.transicao-pagina > .secao-cadastro + .aviso-sucesso,
+.transicao-pagina > .aviso-sucesso + .secao-cadastro {
+  margin-top: var(--space-5);
 }
 
 .filtros {
@@ -415,6 +431,13 @@
   padding: var(--space-5);
   border: 1px solid rgba(239, 68, 68, 0.5);
   border-radius: var(--radius);
+}
+
+.zona-perigo-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
 }
 
 .zona-perigo .mensagem-erro {
@@ -753,14 +776,15 @@
   min-width: 0;
 }
 
-.secao-lista-colaboradores {
-  margin-top: var(--space-5);
-}
 
 /* ---------- Janela de confirmação ---------- */
 .confirmacao {
   width: min(440px, calc(100vw - 32px));
   padding: 0;
+  overflow: hidden;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
@@ -1212,4 +1236,107 @@
   border: 1px solid var(--border-forte);
   border-radius: 50%;
   vertical-align: -1px;
+}
+
+/* ---------- Lixeira ---------- */
+.lixeira-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.erro-excluir {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: 14px;
+}
+
+/* ---------- Busca de colaborador pelo nome ---------- */
+.busca-nome {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 520px;
+}
+
+.sugestoes {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: var(--space-1);
+  list-style: none;
+  border: 1px solid var(--border-forte);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+}
+
+.sugestao {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sugestao small {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.sugestao:hover,
+.sugestoes [aria-selected='true'] .sugestao {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.sugestao:hover small,
+.sugestoes [aria-selected='true'] .sugestao small {
+  color: var(--on-primary);
+}
+
+/* ---------- Celular: tabelas dos cartões viram linhas que quebram, sem rolagem lateral ---------- */
+@media (max-width: 640px) {
+  .secao-cadastro .tabela,
+  .secao-cadastro .tabela tbody {
+    display: block;
+  }
+
+  .secao-cadastro .tabela thead {
+    display: none;
+  }
+
+  .secao-cadastro .tabela tr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1) var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .secao-cadastro .tabela tr:last-child {
+    border-bottom: 0;
+  }
+
+  .secao-cadastro .tabela td,
+  .secao-cadastro .tabela tr:last-child td {
+    padding: 0;
+    border: 0;
+  }
+
+  .secao-cadastro .tabela td.celula-acao {
+    flex-basis: 100%;
+    margin-top: var(--space-2);
+    text-align: left;
+  }
+
+  .grade-cadastros {
+    gap: var(--space-4);
+  }
 }

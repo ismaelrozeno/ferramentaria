@@ -37,7 +37,7 @@ O Ismael já ficou preso ao Firebase num projeto antigo. Por isso o banco precis
 4. **Coleções planas**, uma por entidade, ligadas por ID, sem subcoleções.
 5. **O saldo só muda por movimentação** registrada (nunca editado); erros se corrigem com estorno.
 6. **Dinheiro em centavos** (número inteiro). Datas sem hora como texto `AAAA-MM-DD`; momentos como Timestamp.
-7. Nada é apagado: itens, locais, usuários recebem `ativo: false`.
+7. Nada some sem passar pela lixeira: desativar é `ativo: false`; excluir envia para a lixeira (`excluidoEm`, restaurável). Só o admin apaga de vez, sempre com pop-up. Apagar de vez remove o cadastro, mas as `movimentacoes` ficam (guardam código e nome do momento) e os contadores de código nunca voltam atrás. Com a lixeira desligada (`configuracoes/sistema.lixeiraAtiva`), Excluir apaga direto. Qualquer lista nova deve ignorar registros com `excluidoEm`.
 8. `firestore.rules` **nega tudo**: só a API (firebase-admin) acessa.
 
 ```
@@ -111,10 +111,11 @@ npx firebase deploy --only functions,hosting,firestore --project ferramentaria-6
 | Login, perfis, gestão de usuários, login salvo no navegador | pronto |
 | Publicação (Hosting + Function em São Paulo + Firestore) | no ar |
 | Colaboradores (cadastro por importação de CSV, lista, desativar) | pronto, ainda não publicado |
-| Balcão: identificação pela digital (leitor simulado), matrícula + motivo como alternativa, retirada/devolução tudo ou nada | pronto, ainda não publicado; falta o leitor real (SDK) |
+| Balcão: retirada e devolução identificam a pessoa pela digital (leitor simulado) ou, em último caso, pelo nome com sugestões + motivo; devolução mostra as ferramentas que estão com a pessoa; tudo ou nada | pronto, ainda não publicado; falta o leitor real (SDK) |
 | Ranking: pontos pela devolução (10 no prazo, 3 atrasada, bônus a cada 5 seguidas), ligas por XP, `/ranking` e painel público `/painel` | pronto, ainda não publicado |
 | Configurações: tema claro/escuro/sistema, cor principal (verde, vermelho, azul, rosa), fundo, ícones do fundo, posição do menu (esquerda, direita, topo, base), link de troca de senha por e-mail | pronto, ainda não publicado |
-| 111 testes automáticos da API | passando |
+| Lixeira e exclusão (itens, colaboradores, categorias, locais, usuários), liga/desliga em Configurações, restaurar e apagar de vez | pronto, ainda não publicado |
+| 139 testes automáticos da API | passando |
 
 ## Aparência (decisões)
 
@@ -124,7 +125,6 @@ npx firebase deploy --only functions,hosting,firestore --project ferramentaria-6
 
 ## Próximos passos (em aberto)
 
-0. **Lixeira e exclusão (Fatia B do plano de Configurações)**: campo `excluidoEm`, `configuracoes/sistema.lixeiraAtiva`, exclusão definitiva só do admin com pop-up, histórico das movimentações preservado.
 
 1. **Importar Excel (.xlsx)** de colaboradores: hoje só CSV; o Ismael vai enviar o formato real do arquivo.
 2. **Leitor de digital real**: a tela e a API já identificam por `biometriaId`; hoje o leitor é simulado. Para o real, um programa no PC do balcão (SDK do fabricante) responde `POST {VITE_LEITOR_URL}/ler` com `{ biometriaId }` (o leitor

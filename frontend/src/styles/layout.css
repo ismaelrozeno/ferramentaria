@@ -173,6 +173,11 @@
 }
 
 @media (max-width: 900px) {
+  /* A posição do menu só existe em telas largas: no celular o menu é sempre a gaveta */
+  .so-tela-larga {
+    display: none !important;
+  }
+
   .topo {
     position: sticky;
     top: 0;

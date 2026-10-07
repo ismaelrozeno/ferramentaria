@@ -6,7 +6,7 @@ const CHAVE = 'ferrum.aparencia'
 export const TEMAS = [
   { id: 'escuro', nome: 'Escuro', texto: 'Fundo escuro, o visual padrão.' },
   { id: 'claro', nome: 'Claro', texto: 'Fundo claro, bom para ambientes com muita luz.' },
-  { id: 'sistema', nome: 'Seguir o computador', texto: 'Muda sozinho conforme o Windows.' },
+  { id: 'sistema', nome: 'Automático', texto: 'Segue o tema do aparelho: muda sozinho quando ele muda.' },
 ]
 
 export const ACENTOS = [

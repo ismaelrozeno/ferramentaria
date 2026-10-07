@@ -1,11 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
+import BotaoExcluir from '../components/BotaoExcluir.jsx'
 import Confirmacao from '../components/Confirmacao.jsx'
 import { useAuth } from '../contexto/auth.js'
 import { api } from '../services/api.js'
 import Esqueleto from '../components/Esqueleto.jsx'
 
 const PERFIS = { admin: 'Administrador', almoxarife: 'Almoxarife' }
+const O_QUE_PODE = {
+  almoxarife: 'Almoxarife: faz retiradas, devoluções e consultas.',
+  admin: 'Administrador: tudo, inclusive cadastros, exclusões e usuários.',
+}
 const vazio = { nome: '', email: '', perfil: 'almoxarife', senha: '' }
 
 function Usuarios() {
@@ -62,9 +67,10 @@ function Usuarios() {
             <label className="campo">
               <span>Perfil</span>
               <select value={form.perfil} onChange={mudar('perfil')}>
-                <option value="almoxarife">Almoxarife: retiradas, devoluções e consultas</option>
-                <option value="admin">Administrador: tudo, inclusive cadastros e usuários</option>
+                <option value="almoxarife">Almoxarife</option>
+                <option value="admin">Administrador</option>
               </select>
+              <small className="texto-apoio">{O_QUE_PODE[form.perfil]}</small>
             </label>
             <label className="campo">
               <span>Senha inicial (mínimo 8 caracteres)</span>
@@ -133,6 +139,7 @@ function Usuarios() {
                           {u.ativo ? 'Desativar' : 'Reativar'}
                         </button>
                       )}
+                      {!souEu && <BotaoExcluir tipo="usuarios" id={u.id} nome={u.nome} />}
                     </div>
                   </li>
                 )

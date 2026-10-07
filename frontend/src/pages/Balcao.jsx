@@ -1,15 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
-import CapturaDigital from "../components/CapturaDigital.jsx";
+import Esqueleto from "../components/Esqueleto.jsx";
+import IdentificarColaborador from "../components/IdentificarColaborador.jsx";
+import MotivoSemDigital from "../components/MotivoSemDigital.jsx";
 import { api } from "../services/api.js";
-import Esqueleto from '../components/Esqueleto.jsx'
-
-const MOTIVOS = [
-  "Leitor de digital com defeito",
-  "Digital não reconhecida",
-  "Colaborador sem digital cadastrada",
-  "Outro",
-];
+import { justificativaDe } from "../utils/balcao.js";
 
 const SITUACAO = {
   disponivel: "Disponível",
@@ -80,19 +75,42 @@ function CampoCodigo({ rotulo, aoEncontrar }) {
   );
 }
 
+// Cartão da pessoa já identificada, com como ela foi achada e o botão de trocar.
+function CartaoColaborador({ colaborador, aoTrocar, children }) {
+  return (
+    <div className="balcao-colaborador">
+      <div>
+        <p className="usuario-nome">{colaborador.nome}</p>
+        <p className="texto-apoio">
+          Matrícula {colaborador.matricula}
+          {colaborador.equipe && ` · ${colaborador.equipe}`} ·{" "}
+          {colaborador.biometriaId
+            ? "Identificado pela digital"
+            : "Identificado pelo nome (sem digital)"}
+        </p>
+        {children}
+      </div>
+      <button
+        type="button"
+        className="botao botao-secundario botao-pequeno"
+        onClick={aoTrocar}
+      >
+        Trocar
+      </button>
+    </div>
+  );
+}
+
 function Retirada() {
   const queryClient = useQueryClient();
-  const [matricula, setMatricula] = useState("");
   const [colaborador, setColaborador] = useState(null);
-  const [usarMatricula, setUsarMatricula] = useState(false);
-  const [erroColaborador, setErroColaborador] = useState("");
   const [motivo, setMotivo] = useState("");
   const [motivoOutro, setMotivoOutro] = useState("");
   const [prazo, setPrazo] = useState("");
   const [lista, setLista] = useState([]);
   const [concluida, setConcluida] = useState(null);
 
-  const justificativa = motivo === "Outro" ? motivoOutro.trim() : motivo;
+  const justificativa = justificativaDe(motivo, motivoOutro);
   const temFerramenta = lista.some((i) => i.tipo === "ferramenta");
 
   const confirmar = useMutation({
@@ -111,8 +129,6 @@ function Retirada() {
       setConcluida(resultado);
       setLista([]);
       setColaborador(null);
-      setUsarMatricula(false);
-      setMatricula("");
       setMotivo("");
       setMotivoOutro("");
       setPrazo("");
@@ -120,47 +136,6 @@ function Retirada() {
       queryClient.invalidateQueries({ queryKey: ["itens"] });
     },
   });
-
-  async function identificarPelaDigital(biometriaId) {
-    setErroColaborador("");
-    setConcluida(null);
-    confirmar.reset();
-    try {
-      const encontrado = await api.post("/balcao/identificacao", {
-        biometriaId,
-      });
-      if (!encontrado.ativo)
-        throw new Error(
-          `${encontrado.nome} está desativado e não pode retirar.`,
-        );
-      setColaborador({ ...encontrado, biometriaId });
-    } catch (err) {
-      setColaborador(null);
-      throw err;
-    }
-  }
-
-  async function buscarColaborador(e) {
-    e.preventDefault();
-    const m = matricula.trim();
-    if (!m) return;
-    setErroColaborador("");
-    setConcluida(null);
-    confirmar.reset();
-    try {
-      const encontrado = await api.get(
-        `/colaboradores/${encodeURIComponent(m)}`,
-      );
-      if (!encontrado.ativo)
-        setErroColaborador(
-          `${encontrado.nome} está desativado e não pode retirar.`,
-        );
-      else setColaborador(encontrado);
-    } catch (err) {
-      setColaborador(null);
-      setErroColaborador(err.message);
-    }
-  }
 
   function adicionar(item) {
     if (lista.some((i) => i.codigo === item.codigo))
@@ -229,80 +204,31 @@ function Retirada() {
       <section className="card secao-cadastro" aria-labelledby="titulo-quem">
         <h2 id="titulo-quem">1. Quem está retirando?</h2>
         {colaborador ? (
-          <div className="balcao-colaborador">
-            <div>
-              <p className="usuario-nome">{colaborador.nome}</p>
+          <CartaoColaborador
+            colaborador={colaborador}
+            aoTrocar={() => setColaborador(null)}
+          >
+            {colaborador.ferramentasEmUso.length > 0 && (
               <p className="texto-apoio">
-                Matrícula {colaborador.matricula}
-                {colaborador.equipe && ` · ${colaborador.equipe}`} ·{" "}
-                {colaborador.biometriaId
-                  ? "Identificado pela digital"
-                  : "Identificado pela matrícula"}
+                Já está com:{" "}
+                {colaborador.ferramentasEmUso
+                  .map(
+                    (f) =>
+                      `${f.codigo}${f.prazoDevolucao ? ` (até ${dataBr(f.prazoDevolucao)})` : ""}`,
+                  )
+                  .join(", ")}
               </p>
-              {colaborador.ferramentasEmUso.length > 0 && (
-                <p className="texto-apoio">
-                  Já está com:{" "}
-                  {colaborador.ferramentasEmUso
-                    .map(
-                      (f) =>
-                        `${f.codigo}${f.prazoDevolucao ? ` (até ${dataBr(f.prazoDevolucao)})` : ""}`,
-                    )
-                    .join(", ")}
-                </p>
-              )}
-            </div>
-            <button
-              type="button"
-              className="botao botao-secundario botao-pequeno"
-              onClick={() => setColaborador(null)}
-            >
-              Trocar
-            </button>
-          </div>
-        ) : usarMatricula ? (
-          <form className="form-linha" onSubmit={buscarColaborador}>
-            <label className="campo">
-              <span>Matrícula</span>
-              <input
-                value={matricula}
-                onChange={(e) => setMatricula(e.target.value)}
-                autoComplete="off"
-              />
-            </label>
-            <button
-              type="submit"
-              className="botao botao-primario"
-              disabled={!matricula.trim()}
-            >
-              Buscar
-            </button>
-            <button
-              type="button"
-              className="botao botao-secundario"
-              onClick={() => setUsarMatricula(false)}
-            >
-              Voltar para a digital
-            </button>
-          </form>
+            )}
+          </CartaoColaborador>
         ) : (
-          <>
-            <p className="texto-apoio">
-              Peça para o colaborador posicionar o dedo no leitor.
-            </p>
-            <CapturaDigital aoLer={identificarPelaDigital} />
-            <button
-              type="button"
-              className="botao botao-secundario botao-pequeno"
-              onClick={() => setUsarMatricula(true)}
-            >
-              Digital não funcionou: usar matrícula
-            </button>
-          </>
-        )}
-        {erroColaborador && (
-          <p className="mensagem-erro" role="alert">
-            {erroColaborador}
-          </p>
+          <IdentificarColaborador
+            acao="retirar"
+            aoIdentificar={(encontrado) => {
+              setConcluida(null);
+              confirmar.reset();
+              setColaborador(encontrado);
+            }}
+          />
         )}
       </section>
 
@@ -380,39 +306,13 @@ function Retirada() {
           </section>
 
           {precisaMotivo && (
-            <section
-              className="card secao-cadastro"
-              aria-labelledby="titulo-motivo"
-            >
-              <h2 id="titulo-motivo">3. Por que não foi pela digital?</h2>
-              <fieldset className="escolha-tipo">
-                <legend className="sr-only">Motivo</legend>
-                {MOTIVOS.map((m) => (
-                  <label key={m} className="opcao">
-                    <input
-                      type="radio"
-                      name="motivo"
-                      value={m}
-                      checked={motivo === m}
-                      onChange={() => setMotivo(m)}
-                    />
-                    <span>
-                      <strong>{m}</strong>
-                    </span>
-                  </label>
-                ))}
-              </fieldset>
-              {motivo === "Outro" && (
-                <label className="campo">
-                  <span>Explique (mínimo 5 letras)</span>
-                  <input
-                    value={motivoOutro}
-                    maxLength={200}
-                    onChange={(e) => setMotivoOutro(e.target.value)}
-                  />
-                </label>
-              )}
-            </section>
+            <MotivoSemDigital
+              titulo="3. Por que não foi pela digital?"
+              motivo={motivo}
+              aoMudarMotivo={setMotivo}
+              outro={motivoOutro}
+              aoMudarOutro={setMotivoOutro}
+            />
           )}
 
           <section className="card secao-cadastro">
@@ -442,27 +342,44 @@ function Retirada() {
 
 function Devolucao() {
   const queryClient = useQueryClient();
+  const [quem, setQuem] = useState(null);
+  const [motivo, setMotivo] = useState("");
+  const [motivoOutro, setMotivoOutro] = useState("");
   const [lista, setLista] = useState([]);
-  const [devolvidoPor, setDevolvidoPor] = useState("");
   const [observacao, setObservacao] = useState("");
   const [concluida, setConcluida] = useState(null);
+
+  const justificativa = justificativaDe(motivo, motivoOutro);
+  const precisaMotivo = quem && !quem.biometriaId;
 
   const confirmar = useMutation({
     mutationFn: () =>
       api.post("/balcao/devolucoes", {
         codigos: lista.map((i) => i.codigo),
-        devolvidoPorMatricula: devolvidoPor.trim() || undefined,
+        ...(quem.biometriaId
+          ? { devolvidoPorBiometriaId: quem.biometriaId }
+          : { devolvidoPorMatricula: quem.matricula, justificativa }),
         observacao: observacao.trim() || undefined,
       }),
     onSuccess: (resultado) => {
       setConcluida(resultado);
       setLista([]);
-      setDevolvidoPor("");
+      setQuem(null);
+      setMotivo("");
+      setMotivoOutro("");
       setObservacao("");
       queryClient.invalidateQueries({ queryKey: ["balcao"] });
       queryClient.invalidateQueries({ queryKey: ["itens"] });
     },
   });
+
+  function incluir(ferramenta) {
+    setLista((atual) =>
+      atual.some((i) => i.codigo === ferramenta.codigo)
+        ? atual
+        : [...atual, ferramenta],
+    );
+  }
 
   function adicionar(item) {
     setConcluida(null);
@@ -474,17 +391,30 @@ function Devolucao() {
     const status = item.ferramenta?.status;
     if (status !== "em_uso")
       return `${item.codigo} (${item.nome}) não está em uso (${SITUACAO[status]?.toLowerCase()}).`;
-    setLista((atual) => [
-      ...atual,
-      {
-        codigo: item.codigo,
-        nome: item.nome,
-        responsavel: item.ferramenta.colaboradorNome,
-        prazo: item.ferramenta.prazoDevolucao,
-      },
-    ]);
+    incluir({
+      codigo: item.codigo,
+      nome: item.nome,
+      responsavel: item.ferramenta.colaboradorNome,
+      prazo: item.ferramenta.prazoDevolucao,
+    });
     return "";
   }
+
+  const comEle = (quem?.ferramentasEmUso ?? []).filter(
+    (f) => !lista.some((i) => i.codigo === f.codigo),
+  );
+  const daPessoa = (f) => ({
+    codigo: f.codigo,
+    nome: f.nome,
+    responsavel: quem.nome,
+    prazo: f.prazoDevolucao,
+  });
+
+  const podeConfirmar =
+    quem &&
+    lista.length > 0 &&
+    (!precisaMotivo || justificativa.length >= 5) &&
+    !confirmar.isPending;
 
   return (
     <>
@@ -502,86 +432,169 @@ function Devolucao() {
         </div>
       )}
 
-      <section
-        className="card secao-cadastro"
-        aria-labelledby="titulo-devolver"
-      >
-        <h2 id="titulo-devolver">Ferramentas devolvidas</h2>
-        <CampoCodigo rotulo="Código da ferramenta" aoEncontrar={adicionar} />
-        {lista.length === 0 ? (
-          <p className="estado-vazio">Nenhuma ferramenta ainda.</p>
+      <section className="card secao-cadastro" aria-labelledby="titulo-quem">
+        <h2 id="titulo-quem">1. Quem está devolvendo?</h2>
+        {quem ? (
+          <CartaoColaborador colaborador={quem} aoTrocar={() => setQuem(null)}>
+            {quem.ferramentasEmUso.length === 0 && (
+              <p className="texto-apoio">Não está com nenhuma ferramenta.</p>
+            )}
+          </CartaoColaborador>
         ) : (
-          <table className="tabela">
-            <thead>
-              <tr>
-                <th>Código</th>
-                <th>Ferramenta</th>
-                <th>Estava com</th>
-                <th>Prazo</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {lista.map((i) => (
-                <tr key={i.codigo}>
-                  <td>{i.codigo}</td>
-                  <td>{i.nome}</td>
-                  <td>{i.responsavel}</td>
-                  <td>{i.prazo ? dataBr(i.prazo) : "—"}</td>
-                  <td className="celula-acao">
-                    <button
-                      type="button"
-                      className="botao botao-secundario botao-pequeno"
-                      onClick={() =>
-                        setLista((atual) =>
-                          atual.filter((x) => x.codigo !== i.codigo),
-                        )
-                      }
-                    >
-                      Tirar
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <IdentificarColaborador
+            acao="devolver"
+            aoIdentificar={(encontrado) => {
+              setConcluida(null);
+              confirmar.reset();
+              setQuem(encontrado);
+            }}
+          />
         )}
-        <div className="grade-campos">
-          <label className="campo">
-            <span>Matrícula de quem devolveu (se não for quem retirou)</span>
-            <input
-              value={devolvidoPor}
-              onChange={(e) => setDevolvidoPor(e.target.value)}
-              autoComplete="off"
-            />
-          </label>
-          <label className="campo">
-            <span>Observação (opcional)</span>
-            <input
-              value={observacao}
-              maxLength={200}
-              onChange={(e) => setObservacao(e.target.value)}
-            />
-          </label>
-        </div>
-        {confirmar.isError && (
-          <p className="mensagem-erro" role="alert">
-            {confirmar.error.message}
-          </p>
-        )}
-        <div className="acoes-formulario">
-          <button
-            type="button"
-            className="botao botao-primario"
-            disabled={lista.length === 0 || confirmar.isPending}
-            onClick={() => confirmar.mutate()}
-          >
-            {confirmar.isPending
-              ? "Registrando…"
-              : `Confirmar devolução (${lista.length})`}
-          </button>
-        </div>
       </section>
+
+      {quem && (
+        <>
+          {quem.ferramentasEmUso.length > 0 && (
+            <section
+              className="card secao-cadastro"
+              aria-labelledby="titulo-com-ele"
+            >
+              <div className="balcao-colaborador">
+                <h2 id="titulo-com-ele">Ferramentas que estão com {quem.nome}</h2>
+                {comEle.length > 1 && (
+                  <button
+                    type="button"
+                    className="botao botao-secundario botao-pequeno"
+                    onClick={() => comEle.forEach((f) => incluir(daPessoa(f)))}
+                  >
+                    Devolver todas
+                  </button>
+                )}
+              </div>
+              <table className="tabela">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Ferramenta</th>
+                    <th>Prazo</th>
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {quem.ferramentasEmUso.map((f) => {
+                    const naLista = lista.some((i) => i.codigo === f.codigo);
+                    return (
+                      <tr key={f.id}>
+                        <td>{f.codigo}</td>
+                        <td>{f.nome}</td>
+                        <td>{f.prazoDevolucao ? dataBr(f.prazoDevolucao) : "—"}</td>
+                        <td className="celula-acao">
+                          <button
+                            type="button"
+                            className="botao botao-secundario botao-pequeno"
+                            disabled={naLista}
+                            onClick={() => incluir(daPessoa(f))}
+                          >
+                            {naLista ? "Na lista" : "Devolver"}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </section>
+          )}
+
+          <section
+            className="card secao-cadastro"
+            aria-labelledby="titulo-devolver"
+          >
+            <h2 id="titulo-devolver">2. Ferramentas devolvidas</h2>
+            <p className="texto-apoio">
+              Escolha acima ou passe o leitor no código da ferramenta (também
+              serve para ferramenta que era de outra pessoa).
+            </p>
+            <CampoCodigo rotulo="Código da ferramenta" aoEncontrar={adicionar} />
+            {lista.length === 0 ? (
+              <p className="estado-vazio">Nenhuma ferramenta ainda.</p>
+            ) : (
+              <table className="tabela">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Ferramenta</th>
+                    <th>Estava com</th>
+                    <th>Prazo</th>
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {lista.map((i) => (
+                    <tr key={i.codigo}>
+                      <td>{i.codigo}</td>
+                      <td>{i.nome}</td>
+                      <td>{i.responsavel}</td>
+                      <td>{i.prazo ? dataBr(i.prazo) : "—"}</td>
+                      <td className="celula-acao">
+                        <button
+                          type="button"
+                          className="botao botao-secundario botao-pequeno"
+                          onClick={() =>
+                            setLista((atual) =>
+                              atual.filter((x) => x.codigo !== i.codigo),
+                            )
+                          }
+                        >
+                          Tirar
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+            <label className="campo">
+              <span>Observação (opcional)</span>
+              <input
+                value={observacao}
+                maxLength={200}
+                onChange={(e) => setObservacao(e.target.value)}
+              />
+            </label>
+          </section>
+
+          {precisaMotivo && (
+            <MotivoSemDigital
+              titulo="3. Por que não foi pela digital?"
+              motivo={motivo}
+              aoMudarMotivo={setMotivo}
+              outro={motivoOutro}
+              aoMudarOutro={setMotivoOutro}
+            />
+          )}
+
+          <section className="card secao-cadastro">
+            {confirmar.isError && (
+              <p className="mensagem-erro" role="alert">
+                {confirmar.error.message}
+              </p>
+            )}
+            <div className="acoes-formulario">
+              <button
+                type="button"
+                className="botao botao-primario"
+                disabled={!podeConfirmar}
+                onClick={() => confirmar.mutate()}
+              >
+                {confirmar.isPending
+                  ? "Registrando…"
+                  : `Confirmar devolução (${lista.length})`}
+              </button>
+            </div>
+          </section>
+        </>
+      )}
     </>
   );
 }
@@ -641,7 +654,7 @@ function Balcao() {
         <h1>Balcão</h1>
         <p>
           Retirada e devolução. O colaborador se identifica pela digital; se ela
-          não funcionar, use a matrícula e o motivo fica registrado.
+          não funcionar, procure pelo nome e o motivo fica registrado.
         </p>
       </header>
 

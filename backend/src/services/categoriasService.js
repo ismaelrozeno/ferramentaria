@@ -7,7 +7,7 @@ const categorias = () => db.collection('categorias');
 
 async function listar() {
   const snap = await categorias().orderBy('sigla').get();
-  return snap.docs.map(docParaJson);
+  return snap.docs.filter((doc) => !doc.data().excluidoEm).map(docParaJson);
 }
 
 async function criar({ sigla, nome }) {

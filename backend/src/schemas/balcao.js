@@ -39,17 +39,26 @@ const retirada = z
 
 const identificacao = z.object({ biometriaId });
 
-const devolucao = z.object({
+const devolucao = z
+  .object({
   codigos: z
     .array(codigo, { error: 'Informe os códigos das ferramentas.' })
     .min(1, 'Informe ao menos uma ferramenta.')
     .max(30, 'Máximo de 30 ferramentas por devolução.')
     .refine((codigos) => semRepetidos(codigos), 'Há códigos repetidos na lista.'),
+  devolvidoPorBiometriaId: biometriaId.optional(),
   devolvidoPorMatricula: z
     .union([matricula, z.literal('')])
     .optional()
     .transform((valor) => valor || undefined),
+  justificativa: z.string().trim().max(200).optional(),
   observacao: textoOpcional(200),
-});
+  })
+  .superRefine((dados, ctx) => {
+    // Quem devolve pela matrícula (e não pela digital) precisa dizer por quê, como na retirada.
+    if (dados.devolvidoPorMatricula && !dados.devolvidoPorBiometriaId && (dados.justificativa ?? '').length < 5) {
+      ctx.addIssue({ code: 'custom', path: ['justificativa'], message: 'Informe por que a digital não foi usada (mínimo 5 letras).' });
+    }
+  });
 
 module.exports = { retirada, devolucao, identificacao };

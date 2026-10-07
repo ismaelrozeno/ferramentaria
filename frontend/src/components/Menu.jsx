@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router'
 import { useAuth } from '../contexto/auth.js'
+import { useConfiguracoes } from '../contexto/configuracoes.js'
 import { gruposDoMenu } from '../rotas.js'
 import Confirmacao from './Confirmacao.jsx'
 import Icone from './Icone.jsx'
@@ -12,7 +13,9 @@ const PERFIS = { admin: 'Administrador', almoxarife: 'Almoxarife' }
 function Menu({ aberto, aoNavegar }) {
   const { usuario, sair } = useAuth()
   const [confirmandoSaida, setConfirmandoSaida] = useState(false)
-  const podeVer = (rota) => !rota.perfis || rota.perfis.includes(usuario?.perfil)
+  const { lixeiraAtiva } = useConfiguracoes()
+  const podeVer = (rota) =>
+    (!rota.perfis || rota.perfis.includes(usuario?.perfil)) && (!rota.exigeLixeira || lixeiraAtiva)
 
   return (
     <aside className="menu" id="menu-lateral" data-aberto={aberto}>

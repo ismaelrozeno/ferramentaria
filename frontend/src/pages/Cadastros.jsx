@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useAuth } from '../contexto/auth.js'
 import { api } from '../services/api.js'
 import { TIPO_LOCAL } from '../utils/rotulos.js'
+import BotaoExcluir from '../components/BotaoExcluir.jsx'
 import Esqueleto from '../components/Esqueleto.jsx'
 
 function Categorias() {
@@ -88,6 +89,7 @@ function Categorias() {
                     {categoria.ativa ? 'Desativar' : 'Reativar'}
                   </button>
                   )}
+                  <BotaoExcluir tipo="categorias" id={categoria.sigla} nome={`${categoria.sigla} · ${categoria.nome}`} />
                 </td>
               </tr>
             ))}
@@ -179,6 +181,7 @@ function Locais() {
                     {local.ativo ? 'Desativar' : 'Reativar'}
                   </button>
                   )}
+                  <BotaoExcluir tipo="locais" id={local.id} nome={local.nome} />
                 </td>
               </tr>
             ))}

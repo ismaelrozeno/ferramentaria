@@ -10,22 +10,25 @@ const TAMANHO_LOTE = 400;
 
 async function listar() {
   const snap = await colaboradores().orderBy('nome').get();
-  return snap.docs.map(docParaJson);
+  return snap.docs.filter((doc) => !doc.data().excluidoEm).map(docParaJson);
 }
 
 // Colaborador + ferramentas que estão com ele agora (usado no balcão).
 async function buscar(matricula) {
   const snap = await colaboradores().doc(matricula).get();
-  if (!snap.exists) throw naoEncontrado('COLABORADOR_NAO_ENCONTRADO', `Não existe colaborador com a matrícula ${matricula}.`);
+  if (!snap.exists || snap.data().excluidoEm) {
+    throw naoEncontrado('COLABORADOR_NAO_ENCONTRADO', `Não existe colaborador com a matrícula ${matricula}.`);
+  }
   return comFerramentasEmUso(snap);
 }
 
 async function buscarPorBiometria(biometriaId) {
   const achados = await colaboradores().where('biometriaId', '==', biometriaId).limit(1).get();
-  if (achados.empty) {
+  const ativos = achados.docs.filter((doc) => !doc.data().excluidoEm);
+  if (ativos.length === 0) {
     throw naoEncontrado('DIGITAL_NAO_RECONHECIDA', 'Digital não reconhecida. Tente de novo ou identifique pela matrícula.');
   }
-  return comFerramentasEmUso(achados.docs[0]);
+  return comFerramentasEmUso(ativos[0]);
 }
 
 // Vincula a digital ao colaborador; uma digital não pode pertencer a duas pessoas.
@@ -67,8 +70,10 @@ function novoDocumento({ matricula, nome, equipe }) {
 async function criar(dados) {
   const ref = colaboradores().doc(dados.matricula);
   await db.runTransaction(async (transacao) => {
-    if ((await transacao.get(ref)).exists) {
-      throw conflito('MATRICULA_EM_USO', `Já existe um colaborador com a matrícula ${dados.matricula}.`);
+    const existente = await transacao.get(ref);
+    if (existente.exists) {
+      const naLixeira = existente.data().excluidoEm ? ' (está na lixeira: restaure ou apague de vez)' : '';
+      throw conflito('MATRICULA_EM_USO', `Já existe um colaborador com a matrícula ${dados.matricula}${naLixeira}.`);
     }
     transacao.set(ref, novoDocumento(dados));
   });
@@ -118,7 +123,9 @@ async function importar(linhas) {
     for (const item of lote) {
       const ref = colaboradores().doc(item.matricula);
       const atual = existentes.get(item.matricula);
-      if (!atual) {
+      if (atual?.excluidoEm) {
+        erros.push({ linha: item.linha, mensagem: `Matrícula ${item.matricula} está na lixeira. Restaure ou apague de vez antes de importar.` });
+      } else if (!atual) {
         escrita.set(ref, novoDocumento(item));
         criados += 1;
       } else if (atual.nome !== item.nome || atual.equipe !== item.equipe) {

@@ -90,7 +90,7 @@ describe('Pontos pela devolução', () => {
     await api()
       .post('/api/balcao/retiradas')
       .send({ matricula: '1001', justificativa: 'Leitor com defeito', itens: [{ codigo: ferramentas[0].codigo }] });
-    await api().post('/api/balcao/devolucoes').send({ codigos: [ferramentas[0].codigo], devolvidoPorMatricula: '1002' });
+    await api().post('/api/balcao/devolucoes').send({ codigos: [ferramentas[0].codigo], devolvidoPorMatricula: '1002', justificativa: 'Leitor com defeito' });
 
     expect((await colaborador('1001')).xp).toBe(10);
     expect((await colaborador('1002')).xp).toBe(0);

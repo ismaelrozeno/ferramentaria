@@ -55,6 +55,15 @@ export const gruposDoMenu = [
         descricao: 'Contas de administradores e almoxarifes que entram no sistema.',
       },
       {
+        caminho: '/lixeira',
+        titulo: 'Lixeira',
+        pronta: true,
+        perfis: ['admin'],
+        exigeLixeira: true,
+        icone: 'lixeira',
+        descricao: 'Itens, colaboradores, categorias, locais e usuários excluídos: restaurar ou apagar de vez.',
+      },
+      {
         caminho: '/configuracoes',
         titulo: 'Configurações',
         pronta: true,

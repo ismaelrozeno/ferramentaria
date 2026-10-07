@@ -164,3 +164,48 @@
   background: var(--primary);
   color: var(--on-primary);
 }
+
+/* ---------- Celular: cartões mais compactos ---------- */
+@media (max-width: 640px) {
+  .card {
+    padding: var(--space-4);
+  }
+
+  /* Indicadores em linha: nome e descrição à esquerda, o número à direita */
+  .grade-indicadores {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+
+  .indicador {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'nome valor'
+      'detalhe valor';
+    align-items: center;
+    column-gap: var(--space-4);
+    row-gap: 2px;
+    min-height: 0;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .indicador-nome {
+    grid-area: nome;
+  }
+
+  .indicador-valor {
+    grid-area: valor;
+    font-size: 26px;
+    text-align: right;
+  }
+
+  .indicador-detalhe {
+    grid-area: detalhe;
+    margin-top: 0;
+  }
+
+  .passos {
+    gap: var(--space-2);
+  }
+}

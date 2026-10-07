@@ -170,7 +170,12 @@ describe('Devolução no balcão', () => {
     await api().post('/api/colaboradores').send({ matricula: '1002', nome: 'João Lima' });
     const res = await api()
       .post('/api/balcao/devolucoes')
-      .send({ codigos: [furadeira.codigo], devolvidoPorMatricula: '1002', observacao: 'Maria saiu mais cedo' });
+      .send({
+        codigos: [furadeira.codigo],
+        devolvidoPorMatricula: '1002',
+        justificativa: 'Leitor com defeito',
+        observacao: 'Maria saiu mais cedo',
+      });
     const mov = (await db.collection('movimentacoes').where('operacaoId', '==', res.body.operacaoId).get()).docs[0].data();
 
     expect(mov).toMatchObject({
@@ -178,6 +183,8 @@ describe('Devolução no balcão', () => {
       colaboradorId: '1001',
       devolvidoPorId: '1002',
       devolvidoPorNome: 'João Lima',
+      identificacao: 'matricula',
+      justificativa: 'Leitor com defeito',
       observacao: 'Maria saiu mais cedo',
     });
   });
@@ -320,5 +327,40 @@ describe('Identificação pela digital', () => {
   it('sem digital nem matrícula a retirada é recusada', async () => {
     const res = await api().post('/api/balcao/retiradas').send({ itens: [{ codigo: furadeira.codigo }] });
     expect(res.status).toBe(400);
+  });
+});
+
+describe('Quem devolve', () => {
+  const cadastrarDigital = (matricula, biometriaId) => api().put(`/api/colaboradores/${matricula}/biometria`).send({ biometriaId });
+
+  it('identifica quem devolveu pela digital, sem justificativa', async () => {
+    await retirar();
+    await api().post('/api/colaboradores').send({ matricula: '1002', nome: 'João Lima' });
+    await cadastrarDigital('1002', 'DIGITAL-JOAO');
+
+    const res = await api()
+      .post('/api/balcao/devolucoes')
+      .send({ codigos: [furadeira.codigo], devolvidoPorBiometriaId: 'DIGITAL-JOAO' });
+    const mov = (await db.collection('movimentacoes').where('operacaoId', '==', res.body.operacaoId).get()).docs[0].data();
+
+    expect(res.status).toBe(201);
+    expect(mov).toMatchObject({ colaboradorId: '1001', devolvidoPorId: '1002', identificacao: 'biometria', justificativa: null });
+  });
+
+  it('quem devolve pela matrícula precisa explicar por que não foi pela digital', async () => {
+    await retirar();
+    const res = await api().post('/api/balcao/devolucoes').send({ codigos: [furadeira.codigo], devolvidoPorMatricula: '1001' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.mensagem).toMatch(/digital não foi usada/);
+    expect((await statusDe(furadeira.id)).status).toBe('em_uso');
+  });
+
+  it('digital desconhecida de quem devolve recusa a devolução inteira', async () => {
+    await retirar();
+    const res = await api().post('/api/balcao/devolucoes').send({ codigos: [furadeira.codigo], devolvidoPorBiometriaId: 'NINGUEM' });
+
+    expect(res.status).toBe(404);
+    expect((await statusDe(furadeira.id)).status).toBe('em_uso');
   });
 });

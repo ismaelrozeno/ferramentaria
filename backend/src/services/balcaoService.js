@@ -45,7 +45,9 @@ function validarColaborador(snap, acao) {
 
 async function colaboradorAtivo(tx, matricula, acao) {
   const snap = await tx.get(col.colaboradores().doc(matricula));
-  if (!snap.exists) throw naoEncontrado('COLABORADOR_NAO_ENCONTRADO', `Não existe colaborador com a matrícula ${matricula}.`);
+  if (!snap.exists || snap.data().excluidoEm) {
+    throw naoEncontrado('COLABORADOR_NAO_ENCONTRADO', `Não existe colaborador com a matrícula ${matricula}.`);
+  }
   return validarColaborador(snap, acao);
 }
 
@@ -53,10 +55,11 @@ async function colaboradorAtivo(tx, matricula, acao) {
 async function identificar(tx, { biometriaId, matricula }, acao) {
   if (!biometriaId) return colaboradorAtivo(tx, matricula, acao);
   const achados = await tx.get(col.colaboradores().where('biometriaId', '==', biometriaId).limit(1));
-  if (achados.empty) {
+  const ativos = achados.docs.filter((doc) => !doc.data().excluidoEm);
+  if (ativos.length === 0) {
     throw naoEncontrado('DIGITAL_NAO_RECONHECIDA', 'Digital não reconhecida. Tente de novo ou identifique pela matrícula.');
   }
-  return validarColaborador(achados.docs[0], acao);
+  return validarColaborador(ativos[0], acao);
 }
 
 /**
@@ -79,7 +82,9 @@ async function retirar({ biometriaId, matricula, justificativa, prazoDevolucao, 
       const achado = achados.get(codigo);
       if (!achado) continue;
       const item = achado.item.data();
-      if (!item.ativo) {
+      if (item.excluidoEm) {
+        problemas.push(`${codigo}: código não encontrado.`);
+      } else if (!item.ativo) {
         problemas.push(`${codigo}: item desativado.`);
       } else if (item.tipo === 'ferramenta') {
         const ferramenta = achado.ferramenta.data();
@@ -146,9 +151,12 @@ async function retirar({ biometriaId, matricula, justificativa, prazoDevolucao, 
  * pessoa; o responsável pela retirada continua sendo quem a pegou (é dele que o
  * histórico e, depois, os pontos contam).
  */
-async function devolver({ codigos, devolvidoPorMatricula, observacao }, usuario) {
+async function devolver({ codigos, devolvidoPorBiometriaId, devolvidoPorMatricula, justificativa, observacao }, usuario) {
   return db.runTransaction(async (tx) => {
-    const devolvidoPor = devolvidoPorMatricula ? await colaboradorAtivo(tx, devolvidoPorMatricula, 'devolver') : null;
+    const identificouQuemDevolveu = Boolean(devolvidoPorBiometriaId || devolvidoPorMatricula);
+    const devolvidoPor = identificouQuemDevolveu
+      ? await identificar(tx, { biometriaId: devolvidoPorBiometriaId, matricula: devolvidoPorMatricula }, 'devolver')
+      : null;
     const { achados, naoAchados } = await carregar(tx, codigos);
 
     const problemas = naoAchados.map((c) => `${c}: código não encontrado.`);
@@ -208,6 +216,8 @@ async function devolver({ codigos, devolvidoPorMatricula, observacao }, usuario)
         colaboradorNome: ferramenta.colaboradorNome,
         devolvidoPorId: devolvidoPor?.matricula ?? ferramenta.colaboradorId,
         devolvidoPorNome: devolvidoPor?.nome ?? ferramenta.colaboradorNome,
+        identificacao: identificouQuemDevolveu ? (devolvidoPorBiometriaId ? 'biometria' : 'matricula') : null,
+        justificativa: identificouQuemDevolveu && !devolvidoPorBiometriaId ? justificativa : null,
         noPrazo,
         xp,
         usuarioId: usuario.uid,

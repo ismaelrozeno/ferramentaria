@@ -27,7 +27,7 @@ function CapturaDigital({ aoLer, textoBotao = 'Ler digital' }) {
     setLendo(true)
     try {
       const biometriaId = URL_LEITOR ? await lerDoLeitor() : simulada.trim()
-      if (!biometriaId) throw new Error('Digite o código da digital simulada.')
+      if (!biometriaId) throw new Error('Modo de teste: digite o código da digital cadastrada para essa pessoa.')
       await aoLer(biometriaId)
       setSimulada('')
     } catch (err) {
@@ -41,7 +41,7 @@ function CapturaDigital({ aoLer, textoBotao = 'Ler digital' }) {
     <form className="form-linha" onSubmit={ler}>
       {!URL_LEITOR && (
         <label className="campo">
-          <span>Leitor simulado: código da digital</span>
+          <span>Modo de teste (nenhum leitor conectado): código da digital</span>
           <input value={simulada} onChange={(e) => setSimulada(e.target.value)} autoComplete="off" />
         </label>
       )}

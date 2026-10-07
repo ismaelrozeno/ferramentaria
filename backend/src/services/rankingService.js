@@ -17,7 +17,9 @@ async function carregar() {
 
   const semana = semanaDe();
   const snap = await db.collection('colaboradores').where('ativo', '==', true).get();
-  const pessoas = snap.docs.map((doc) => {
+  const pessoas = snap.docs
+    .filter((doc) => !doc.data().excluidoEm)
+    .map((doc) => {
     const c = doc.data();
     const xp = c.xp ?? 0;
     const liga = ligaPorXp(xp);

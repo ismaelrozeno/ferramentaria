@@ -20,7 +20,7 @@ async function autenticar(req, res, next) {
   if (!usuario) {
     throw new ErroApi(403, 'SEM_CADASTRO', 'Seu login existe, mas você não está cadastrado no Ferrum. Peça acesso ao administrador.');
   }
-  if (!usuario.ativo) {
+  if (!usuario.ativo || usuario.excluidoEm) {
     throw new ErroApi(403, 'USUARIO_DESATIVADO', 'Seu acesso ao Ferrum foi desativado. Fale com o administrador.');
   }
 

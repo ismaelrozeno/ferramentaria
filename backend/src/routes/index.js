@@ -3,6 +3,7 @@ const apoio = require('../controllers/cadastrosDeApoioController');
 const balcao = require('../controllers/balcaoController');
 const colaboradores = require('../controllers/colaboradoresController');
 const healthController = require('../controllers/healthController');
+const lixeira = require('../controllers/lixeiraController');
 const ranking = require('../controllers/rankingController');
 const itens = require('../controllers/itensController');
 const usuarios = require('../controllers/usuariosController');
@@ -49,6 +50,15 @@ router.patch('/itens/:id', somenteAdmin, itens.atualizar);
 router.delete('/itens/:id', somenteAdmin, itens.desativar);
 
 router.get('/ranking', ranking.ranking);
+
+router.get('/configuracoes', lixeira.obterConfiguracoes);
+router.patch('/configuracoes', somenteAdmin, lixeira.atualizarConfiguracoes);
+
+router.get('/lixeira', somenteAdmin, lixeira.listar);
+router.post('/lixeira/:tipo/:id/excluir', somenteAdmin, lixeira.excluir);
+router.post('/lixeira/:tipo/:id/restaurar', somenteAdmin, lixeira.restaurar);
+router.delete('/lixeira/:tipo/:id', somenteAdmin, lixeira.apagarDeVez);
+
 router.get('/balcao/ultimas', balcao.ultimas);
 router.post('/balcao/identificacao', balcao.identificar);
 router.post('/balcao/retiradas', balcao.retirar);

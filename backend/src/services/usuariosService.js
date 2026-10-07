@@ -31,7 +31,7 @@ async function buscarParaLogin(token) {
 
 async function listar() {
   const snap = await usuarios().orderBy('nome').get();
-  return snap.docs.map(docParaJson);
+  return snap.docs.filter((doc) => !doc.data().excluidoEm).map(docParaJson);
 }
 
 async function criar({ nome, email, perfil, senha }) {
