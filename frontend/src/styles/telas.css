@@ -386,6 +386,11 @@
   font-weight: 500;
 }
 
+.acoes-etiqueta {
+  display: flex;
+  justify-content: center;
+}
+
 .area-etiqueta {
   display: flex;
   justify-content: center;
@@ -1339,4 +1344,92 @@
   .grade-cadastros {
     gap: var(--space-4);
   }
+}
+
+/* ---------- Celular: histórico de movimentações em blocos, sem rolagem lateral ---------- */
+@media (max-width: 640px) {
+  .tabela-historico,
+  .tabela-historico tbody {
+    display: block;
+  }
+
+  .tabela-historico thead {
+    display: none;
+  }
+
+  .tabela-historico tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'tipo data'
+      'qtd qtd'
+      'quem quem'
+      'obs obs';
+    gap: 2px var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tabela-historico tr:last-child {
+    border-bottom: 0;
+  }
+
+  .tabela-historico td,
+  .tabela-historico tr:last-child td {
+    padding: 0;
+    border: 0;
+  }
+
+  .tabela-historico td:nth-child(1) {
+    grid-area: data;
+    font-size: 14px;
+    color: var(--text-muted);
+    text-align: right;
+  }
+
+  .tabela-historico td:nth-child(2) {
+    grid-area: tipo;
+    font-weight: 600;
+  }
+
+  .tabela-historico td:nth-child(3) {
+    grid-area: qtd;
+  }
+
+  .tabela-historico td:nth-child(4) {
+    grid-area: quem;
+  }
+
+  .tabela-historico td:nth-child(5) {
+    grid-area: obs;
+  }
+
+  .tabela-historico td[data-rotulo]::before {
+    content: attr(data-rotulo) ': ';
+    color: var(--text-muted);
+  }
+
+  .tabela-historico td.sem-valor {
+    display: none;
+  }
+}
+
+/* ---------- Ligas na explicação do ranking ---------- */
+.ligas-regra {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.liga-regra {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
 }

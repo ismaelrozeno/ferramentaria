@@ -81,7 +81,7 @@ function IdentificarColaborador({ acao, aoIdentificar }) {
           className="botao botao-secundario botao-pequeno"
           onClick={() => setPelaNome(true)}
         >
-          Digital não funcionou: procurar pelo nome
+          Sem digital? Buscar pelo nome
         </button>
       </div>
     </>

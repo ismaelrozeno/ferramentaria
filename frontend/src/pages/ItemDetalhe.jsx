@@ -140,9 +140,11 @@ function ItemDetalhe() {
             <div className="area-etiqueta">
               <EtiquetaCodigoDeBarras codigo={dados.codigo} nome={dados.nome} />
             </div>
-            <button type="button" className="botao botao-primario" onClick={() => window.print()}>
-              Imprimir etiqueta
-            </button>
+            <div className="acoes-etiqueta">
+              <button type="button" className="botao botao-primario" onClick={() => window.print()}>
+                Imprimir etiqueta
+              </button>
+            </div>
           </section>
         </div>
       </div>
@@ -153,7 +155,7 @@ function ItemDetalhe() {
           <p className="estado-vazio">Nenhuma movimentação ainda.</p>
         ) : (
           <div className="card card-tabela">
-            <table className="tabela">
+            <table className="tabela tabela-historico">
               <thead>
                 <tr>
                   <th>Data</th>
@@ -168,9 +170,13 @@ function ItemDetalhe() {
                   <tr key={mov.id}>
                     <td className="numero">{formatarData(mov.data)}</td>
                     <td>{MOVIMENTACAO[mov.tipo] ?? mov.tipo}</td>
-                    <td className="numero">{mov.quantidade}</td>
-                    <td>{mov.usuarioNome}</td>
-                    <td>{mov.observacao ?? '—'}</td>
+                    <td className="numero" data-rotulo="Quantidade">
+                      {mov.quantidade}
+                    </td>
+                    <td data-rotulo="Registrado por">{mov.usuarioNome}</td>
+                    <td data-rotulo="Observação" className={mov.observacao ? undefined : 'sem-valor'}>
+                      {mov.observacao ?? '—'}
+                    </td>
                   </tr>
                 ))}
               </tbody>

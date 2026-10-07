@@ -40,10 +40,13 @@ function CapturaDigital({ aoLer, textoBotao = 'Ler digital' }) {
   return (
     <form className="form-linha" onSubmit={ler}>
       {!URL_LEITOR && (
-        <label className="campo">
-          <span>Modo de teste (nenhum leitor conectado): código da digital</span>
-          <input value={simulada} onChange={(e) => setSimulada(e.target.value)} autoComplete="off" />
-        </label>
+        <>
+          <p className="texto-apoio balcao-erro-linha">Modo de teste: nenhum leitor conectado.</p>
+          <label className="campo">
+            <span>Código da digital</span>
+            <input value={simulada} onChange={(e) => setSimulada(e.target.value)} autoComplete="off" />
+          </label>
+        </>
       )}
       <button type="submit" className="botao botao-primario" disabled={lendo}>
         {lendo ? 'Lendo…' : textoBotao}

@@ -69,19 +69,17 @@ function Ranking() {
             <li>
               Os pontos vão para quem retirou a ferramenta, mesmo que outra pessoa devolva.
             </li>
-            <li>
-              Ligas pelo total de XP:{' '}
-              {data.ligas.map((liga, i) => (
-                <span key={liga.id}>
-                  {i > 0 && ', '}
-                  <span className="selo-liga" data-liga={liga.id}>
-                    {liga.nome}
-                  </span>{' '}
-                  {liga.minimo}+
+          </ul>
+          <h3>Ligas pelo total de XP</h3>
+          <ul className="ligas-regra">
+            {data.ligas.map((liga) => (
+              <li key={liga.id} className="liga-regra">
+                <span className="selo-liga" data-liga={liga.id}>
+                  {liga.nome}
                 </span>
-              ))}
-              .
-            </li>
+                <span>{liga.minimo}+ XP</span>
+              </li>
+            ))}
           </ul>
         </section>
       )}
