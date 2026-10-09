@@ -20,6 +20,19 @@
   background: rgb(var(--primary-rgb) / 0.1);
 }
 
+.aviso-com-acao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: 0;
+}
+
+.aviso-com-acao p {
+  margin: 0;
+}
+
 .estado-vazio {
   padding: var(--space-4);
   border: 1px dashed var(--border);
@@ -317,12 +330,138 @@
   color: var(--warning);
 }
 
+.etiqueta-status[data-status='pendente'] {
+  border-color: var(--border-forte);
+  color: var(--text-muted);
+}
+
+/* ---------- Lista de colaboradores ---------- */
+.tabela-colaboradores td {
+  vertical-align: middle;
+}
+
+.colaborador-identidade {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.colaborador-nome {
+  font-weight: 600;
+}
+
+.colaborador-funcao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.tabela-colaboradores tr[data-inativo='true'] .colaborador-nome {
+  text-decoration: line-through;
+}
+
+.etiqueta-desativado {
+  padding: 1px 8px;
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* Botões com largura fixa: ficam alinhados em coluna de uma linha para a outra */
+.acoes-colaborador .botao {
+  justify-content: center;
+}
+
+.acoes-colaborador .botao-digital {
+  min-width: 9.5rem;
+}
+
+.acoes-colaborador .botao-situacao {
+  min-width: 6.5rem;
+}
+
+@media (max-width: 760px) {
+  .tabela-colaboradores thead {
+    display: none;
+  }
+
+  .tabela-colaboradores,
+  .tabela-colaboradores tbody {
+    display: block;
+  }
+
+  .tabela-colaboradores tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2) var(--space-4);
+    padding: var(--space-4) 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .tabela-colaboradores td {
+    padding: 0;
+    border: 0;
+  }
+
+  .tabela-colaboradores .col-colaborador,
+  .tabela-colaboradores .acoes-colaborador {
+    grid-column: 1 / -1;
+  }
+
+  .tabela-colaboradores td[data-rotulo]::before {
+    content: attr(data-rotulo);
+    display: block;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .tabela-colaboradores td[data-rotulo='Equipe'] {
+    grid-column: 1 / -1;
+  }
+
+  .acoes-colaborador {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    white-space: normal;
+    text-align: left;
+    padding-top: var(--space-2) !important;
+  }
+
+  .acoes-colaborador .botao + .botao {
+    margin-left: 0;
+  }
+
+  .acoes-colaborador .botao {
+    flex: 1 1 auto;
+  }
+}
+
 /* ---------- Páginas ---------- */
 .grade-cadastros {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
   gap: var(--space-5);
   align-items: start;
+}
+
+.proximo-passo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-4);
+  margin-top: var(--space-5);
+  padding: var(--space-4);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-sm);
+  background: rgb(var(--primary-rgb) / 0.1);
+}
+
+.proximo-passo p {
+  margin: 0;
 }
 
 .secao-cadastro {
@@ -779,6 +918,16 @@
 
 .importar-previa .tabela {
   min-width: 0;
+}
+
+/* Prévia com muitas colunas: rola de lado no celular em vez de estourar a tela */
+.importar-previa .tabela-rolavel {
+  align-self: stretch;
+  overflow-x: auto;
+}
+
+.importar-previa .tabela-rolavel td {
+  white-space: nowrap;
 }
 
 
@@ -1364,6 +1513,7 @@
       'tipo data'
       'qtd qtd'
       'quem quem'
+      'ass ass'
       'obs obs';
     gap: 2px var(--space-3);
     padding: var(--space-3) var(--space-4);
@@ -1401,6 +1551,10 @@
   }
 
   .tabela-historico td:nth-child(5) {
+    grid-area: ass;
+  }
+
+  .tabela-historico td:nth-child(6) {
     grid-area: obs;
   }
 

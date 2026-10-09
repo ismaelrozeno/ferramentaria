@@ -4,7 +4,7 @@ import Esqueleto from "../components/Esqueleto.jsx";
 import IdentificarColaborador from "../components/IdentificarColaborador.jsx";
 import MotivoSemDigital from "../components/MotivoSemDigital.jsx";
 import { api } from "../services/api.js";
-import { justificativaDe } from "../utils/balcao.js";
+import { justificativaDe, textoAssinatura } from "../utils/balcao.js";
 
 const SITUACAO = {
   disponivel: "Disponível",
@@ -85,8 +85,8 @@ function CartaoColaborador({ colaborador, aoTrocar, children }) {
           Matrícula {colaborador.matricula}
           {colaborador.equipe && ` · ${colaborador.equipe}`} ·{" "}
           {colaborador.biometriaId
-            ? "Identificado pela digital"
-            : "Identificado pelo nome (sem digital)"}
+            ? "Assinou pela digital"
+            : "Sem digital (nome e motivo)"}
         </p>
         {children}
       </div>
@@ -188,7 +188,7 @@ function Retirada() {
       {concluida && (
         <div className="aviso-sucesso" role="status">
           <strong>
-            Retirada registrada para {concluida.colaborador.nome}:
+            Retirada registrada e assinada por {concluida.colaborador.nome}:
           </strong>
           <ul className="balcao-resumo">
             {concluida.itens.map((i) => (
@@ -420,7 +420,10 @@ function Devolucao() {
     <>
       {concluida && (
         <div className="aviso-sucesso" role="status">
-          <strong>Devolução registrada:</strong>
+          <strong>
+            Devolução registrada. Recebimento assinado por{" "}
+            {concluida.assinadoPor.nome}:
+          </strong>
           <ul className="balcao-resumo">
             {concluida.itens.map((i) => (
               <li key={i.codigo}>
@@ -622,6 +625,7 @@ function Ultimas() {
               <th>Operação</th>
               <th>Item</th>
               <th>Colaborador</th>
+              <th>Assinatura</th>
             </tr>
           </thead>
           <tbody>
@@ -636,6 +640,7 @@ function Ultimas() {
                     ` (${m.quantidade} un)`}
                 </td>
                 <td>{m.colaboradorNome}</td>
+                <td>{textoAssinatura(m.assinatura)}</td>
               </tr>
             ))}
           </tbody>
@@ -653,7 +658,9 @@ function Balcao() {
       <header className="cabecalho-pagina">
         <h1>Balcão</h1>
         <p>
-          Retirada e devolução. O colaborador se identifica pela digital; se ela
+          Retirada e devolução. A digital é a assinatura: de retirada, de quem
+          leva, e de recebimento, de quem entrega. Qualquer pessoa pode assinar a
+          devolução de uma ferramenta que está no nome de outra. Se a digital
           não funcionar, procure pelo nome e o motivo fica registrado.
         </p>
       </header>

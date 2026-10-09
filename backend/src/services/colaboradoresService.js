@@ -62,9 +62,32 @@ async function comFerramentasEmUso(snap) {
   return { ...docParaJson(snap), ferramentasEmUso };
 }
 
-function novoDocumento({ matricula, nome, equipe }) {
+function novoDocumento({ matricula, nome, equipe = '', funcao = '', maoDeObra = null, ativo = true }) {
   const agora = Timestamp.now();
-  return { matricula, nome, equipe, ativo: true, biometriaId: null, xp: 0, criadoEm: agora, atualizadoEm: agora };
+  return {
+    matricula,
+    nome,
+    equipe,
+    funcao,
+    maoDeObra,
+    ativo,
+    biometriaId: null,
+    xp: 0,
+    criadoEm: agora,
+    atualizadoEm: agora,
+  };
+}
+
+// Campos que a importação pode mudar; os que não vieram no arquivo ficam como estão.
+const CAMPOS_IMPORTADOS = ['nome', 'equipe', 'funcao', 'maoDeObra', 'ativo'];
+const PADRAO_ANTIGO = { equipe: '', funcao: '', maoDeObra: null };
+
+function mudancasDaImportacao(atual, item) {
+  return Object.fromEntries(
+    CAMPOS_IMPORTADOS.filter((campo) => item[campo] !== undefined && item[campo] !== (atual[campo] ?? PADRAO_ANTIGO[campo])).map(
+      (campo) => [campo, item[campo]],
+    ),
+  );
 }
 
 async function criar(dados) {
@@ -92,9 +115,9 @@ const emLotes = (lista, tamanho) =>
   Array.from({ length: Math.ceil(lista.length / tamanho) }, (_, i) => lista.slice(i * tamanho, (i + 1) * tamanho));
 
 /**
- * Importação em massa. Recebe linhas já validadas ({ linha, matricula, nome, equipe }).
- * Matrícula nova cria o colaborador; matrícula existente atualiza nome e equipe.
- * Nada é desativado nem apagado: quem não está no arquivo continua como está.
+ * Importação em massa. Recebe linhas já validadas ({ linha, matricula, nome, equipe?, funcao?, maoDeObra?, ativo? }).
+ * Matrícula nova cria o colaborador; matrícula existente atualiza só as colunas que vieram no arquivo
+ * (a situação "inativo" da planilha desativa). Quem não está no arquivo continua como está.
  */
 async function importar(linhas) {
   const erros = [];
@@ -128,11 +151,14 @@ async function importar(linhas) {
       } else if (!atual) {
         escrita.set(ref, novoDocumento(item));
         criados += 1;
-      } else if (atual.nome !== item.nome || atual.equipe !== item.equipe) {
-        escrita.update(ref, { nome: item.nome, equipe: item.equipe, atualizadoEm: Timestamp.now() });
-        atualizados += 1;
       } else {
-        semMudanca += 1;
+        const mudancas = mudancasDaImportacao(atual, item);
+        if (Object.keys(mudancas).length > 0) {
+          escrita.update(ref, { ...mudancas, atualizadoEm: Timestamp.now() });
+          atualizados += 1;
+        } else {
+          semMudanca += 1;
+        }
       }
     }
     await escrita.commit();

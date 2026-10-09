@@ -55,8 +55,10 @@ const devolucao = z
   observacao: textoOpcional(200),
   })
   .superRefine((dados, ctx) => {
-    // Quem devolve pela matrícula (e não pela digital) precisa dizer por quê, como na retirada.
-    if (dados.devolvidoPorMatricula && !dados.devolvidoPorBiometriaId && (dados.justificativa ?? '').length < 5) {
+    // Toda devolução leva a assinatura de recebimento de quem a entrega: digital ou, sem ela, nome + motivo.
+    if (!dados.devolvidoPorBiometriaId && !dados.devolvidoPorMatricula) {
+      ctx.addIssue({ code: 'custom', path: ['devolvidoPorBiometriaId'], message: 'Informe quem assina o recebimento (digital ou nome).' });
+    } else if (dados.devolvidoPorMatricula && !dados.devolvidoPorBiometriaId && (dados.justificativa ?? '').length < 5) {
       ctx.addIssue({ code: 'custom', path: ['justificativa'], message: 'Informe por que a digital não foi usada (mínimo 5 letras).' });
     }
   });

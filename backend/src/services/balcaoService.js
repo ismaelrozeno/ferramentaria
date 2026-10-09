@@ -62,6 +62,18 @@ async function identificar(tx, { biometriaId, matricula }, acao) {
   return validarColaborador(ativos[0], acao);
 }
 
+// A digital é a assinatura da operação: de retirada (quem leva) ou de recebimento (quem entrega).
+// Sem digital, a assinatura vale como 'justificativa' e guarda o motivo.
+function assinaturaDe(tipo, assinante, biometriaId, justificativa) {
+  return {
+    tipo,
+    metodo: biometriaId ? 'biometria' : 'justificativa',
+    matricula: assinante.matricula,
+    nome: assinante.nome,
+    justificativa: biometriaId ? null : (justificativa ?? null),
+  };
+}
+
 /**
  * Retirada no balcão. Tudo ou nada: se um item não puder sair, nenhum sai e a
  * resposta diz o motivo de cada um. Ferramenta passa a "em uso" (saldo continua 1,
@@ -130,6 +142,7 @@ async function retirar({ biometriaId, matricula, justificativa, prazoDevolucao, 
         colaboradorNome: colaborador.nome,
         identificacao: biometriaId ? 'biometria' : 'matricula',
         justificativa: biometriaId ? null : justificativa,
+        assinatura: assinaturaDe('retirada', colaborador, biometriaId, justificativa),
         prazoDevolucao: item.tipo === 'ferramenta' ? (prazoDevolucao ?? null) : null,
         usuarioId: usuario.uid,
         usuarioNome: usuario.nome,
@@ -153,10 +166,7 @@ async function retirar({ biometriaId, matricula, justificativa, prazoDevolucao, 
  */
 async function devolver({ codigos, devolvidoPorBiometriaId, devolvidoPorMatricula, justificativa, observacao }, usuario) {
   return db.runTransaction(async (tx) => {
-    const identificouQuemDevolveu = Boolean(devolvidoPorBiometriaId || devolvidoPorMatricula);
-    const devolvidoPor = identificouQuemDevolveu
-      ? await identificar(tx, { biometriaId: devolvidoPorBiometriaId, matricula: devolvidoPorMatricula }, 'devolver')
-      : null;
+    const devolvidoPor = await identificar(tx, { biometriaId: devolvidoPorBiometriaId, matricula: devolvidoPorMatricula }, 'devolver');
     const { achados, naoAchados } = await carregar(tx, codigos);
 
     const problemas = naoAchados.map((c) => `${c}: código não encontrado.`);
@@ -214,10 +224,11 @@ async function devolver({ codigos, devolvidoPorBiometriaId, devolvidoPorMatricul
         destinoId: item.localId ?? null,
         colaboradorId: ferramenta.colaboradorId,
         colaboradorNome: ferramenta.colaboradorNome,
-        devolvidoPorId: devolvidoPor?.matricula ?? ferramenta.colaboradorId,
-        devolvidoPorNome: devolvidoPor?.nome ?? ferramenta.colaboradorNome,
-        identificacao: identificouQuemDevolveu ? (devolvidoPorBiometriaId ? 'biometria' : 'matricula') : null,
-        justificativa: identificouQuemDevolveu && !devolvidoPorBiometriaId ? justificativa : null,
+        devolvidoPorId: devolvidoPor.matricula,
+        devolvidoPorNome: devolvidoPor.nome,
+        identificacao: devolvidoPorBiometriaId ? 'biometria' : 'matricula',
+        justificativa: devolvidoPorBiometriaId ? null : justificativa,
+        assinatura: assinaturaDe('recebimento', devolvidoPor, devolvidoPorBiometriaId, justificativa),
         noPrazo,
         xp,
         usuarioId: usuario.uid,
@@ -232,7 +243,7 @@ async function devolver({ codigos, devolvidoPorBiometriaId, devolvidoPorMatricul
       tx.update(ref, { xp, xpSemana, semanaId, sequencia, melhorSequencia, devolucoesNoPrazo, devolucoesAtrasadas, atualizadoEm: agora });
     }
 
-    return { operacaoId, itens: resultado };
+    return { operacaoId, assinadoPor: devolvidoPor, itens: resultado };
   });
 }
 

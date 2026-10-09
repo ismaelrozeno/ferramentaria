@@ -153,7 +153,7 @@ describe('Retirada no balcão', () => {
 describe('Devolução no balcão', () => {
   it('devolve a ferramenta: volta a ficar disponível e sem responsável', async () => {
     await retirar({ prazoDevolucao: '2099-12-31' });
-    const res = await api().post('/api/balcao/devolucoes').send({ codigos: [furadeira.codigo] });
+    const res = await api().post('/api/balcao/devolucoes').send({ codigos: [furadeira.codigo], devolvidoPorMatricula: '1001', justificativa: 'Leitor com defeito' });
 
     expect(res.status).toBe(201);
     expect(res.body.itens[0]).toMatchObject({ codigo: furadeira.codigo, responsavel: 'Maria Souza', noPrazo: true });
@@ -192,14 +192,14 @@ describe('Devolução no balcão', () => {
   it('marca atraso quando passou do prazo', async () => {
     await retirar({ prazoDevolucao: '2099-12-31' });
     await db.collection('ferramentas').doc(furadeira.id).update({ prazoDevolucao: '2000-01-01' });
-    const res = await api().post('/api/balcao/devolucoes').send({ codigos: [furadeira.codigo] });
+    const res = await api().post('/api/balcao/devolucoes').send({ codigos: [furadeira.codigo], devolvidoPorMatricula: '1001', justificativa: 'Leitor com defeito' });
 
     expect(res.body.itens[0].noPrazo).toBe(false);
   });
 
   it('noPrazo fica nulo quando a retirada não tinha prazo', async () => {
     await retirar();
-    const res = await api().post('/api/balcao/devolucoes').send({ codigos: [furadeira.codigo] });
+    const res = await api().post('/api/balcao/devolucoes').send({ codigos: [furadeira.codigo], devolvidoPorMatricula: '1001', justificativa: 'Leitor com defeito' });
     expect(res.body.itens[0].noPrazo).toBeNull();
   });
 
@@ -207,7 +207,7 @@ describe('Devolução no balcão', () => {
     await retirar();
     const res = await api()
       .post('/api/balcao/devolucoes')
-      .send({ codigos: [furadeira.codigo, serra.codigo, disco.codigo, 'FER-ELE-9999'] });
+      .send({ codigos: [furadeira.codigo, serra.codigo, disco.codigo, 'FER-ELE-9999'], devolvidoPorMatricula: '1001', justificativa: 'Leitor com defeito' });
 
     expect(res.status).toBe(409);
     expect(res.body.mensagem).toMatch(/Nada foi devolvido/);
@@ -219,7 +219,7 @@ describe('Devolução no balcão', () => {
 
   it('devolve várias de uma vez', async () => {
     await retirar({ itens: [{ codigo: furadeira.codigo }, { codigo: serra.codigo }] });
-    const res = await api().post('/api/balcao/devolucoes').send({ codigos: [furadeira.codigo, serra.codigo] });
+    const res = await api().post('/api/balcao/devolucoes').send({ codigos: [furadeira.codigo, serra.codigo], devolvidoPorMatricula: '1001', justificativa: 'Leitor com defeito' });
 
     expect(res.status).toBe(201);
     expect(res.body.itens).toHaveLength(2);
@@ -245,7 +245,7 @@ describe('Consulta do colaborador e últimas operações', () => {
 
   it('lista as últimas operações, da mais nova para a mais antiga', async () => {
     await retirar();
-    await api().post('/api/balcao/devolucoes').send({ codigos: [furadeira.codigo] });
+    await api().post('/api/balcao/devolucoes').send({ codigos: [furadeira.codigo], devolvidoPorMatricula: '1001', justificativa: 'Leitor com defeito' });
     const res = await api().get('/api/balcao/ultimas');
 
     expect(res.status).toBe(200);
@@ -362,5 +362,70 @@ describe('Quem devolve', () => {
 
     expect(res.status).toBe(404);
     expect((await statusDe(furadeira.id)).status).toBe('em_uso');
+  });
+});
+
+describe('Assinatura (a digital é a assinatura de retirada e de recebimento)', () => {
+  const cadastrarDigital = (matricula, biometriaId) => api().put(`/api/colaboradores/${matricula}/biometria`).send({ biometriaId });
+  const movimentos = async (operacaoId) => (await db.collection('movimentacoes').where('operacaoId', '==', operacaoId).get()).docs.map((d) => d.data());
+
+  it('a retirada pela digital guarda a assinatura de retirada', async () => {
+    await cadastrarDigital('1001', 'DIGITAL-MARIA');
+    const res = await api()
+      .post('/api/balcao/retiradas')
+      .send({ biometriaId: 'DIGITAL-MARIA', itens: [{ codigo: furadeira.codigo }, { codigo: disco.codigo, quantidade: 2 }] });
+
+    const movs = await movimentos(res.body.operacaoId);
+    expect(movs).toHaveLength(2);
+    movs.forEach((m) =>
+      expect(m.assinatura).toEqual({ tipo: 'retirada', metodo: 'biometria', matricula: '1001', nome: 'Maria Souza', justificativa: null }),
+    );
+  });
+
+  it('sem digital, a assinatura de retirada guarda o motivo', async () => {
+    const res = await retirar();
+    const [mov] = await movimentos(res.body.operacaoId);
+
+    expect(mov.assinatura).toEqual({
+      tipo: 'retirada',
+      metodo: 'justificativa',
+      matricula: '1001',
+      nome: 'Maria Souza',
+      justificativa,
+    });
+  });
+
+  it('qualquer pessoa assina o recebimento de ferramenta que está no nome de outra', async () => {
+    await retirar();
+    await api().post('/api/colaboradores').send({ matricula: '1002', nome: 'João Lima' });
+    await cadastrarDigital('1002', 'DIGITAL-JOAO');
+
+    const res = await api()
+      .post('/api/balcao/devolucoes')
+      .send({ codigos: [furadeira.codigo], devolvidoPorBiometriaId: 'DIGITAL-JOAO' });
+    const [mov] = await movimentos(res.body.operacaoId);
+
+    expect(res.status).toBe(201);
+    expect(mov.colaboradorId).toBe('1001');
+    expect(mov.assinatura).toEqual({ tipo: 'recebimento', metodo: 'biometria', matricula: '1002', nome: 'João Lima', justificativa: null });
+  });
+
+  it('toda devolução precisa de assinatura: sem digital nem nome é recusada e nada muda', async () => {
+    await retirar();
+    const res = await api().post('/api/balcao/devolucoes').send({ codigos: [furadeira.codigo] });
+
+    expect(res.status).toBe(400);
+    expect(res.body.mensagem).toMatch(/assina o recebimento/);
+    expect((await statusDe(furadeira.id)).status).toBe('em_uso');
+  });
+
+  it('o recebimento sem digital guarda o motivo na assinatura', async () => {
+    await retirar();
+    const res = await api()
+      .post('/api/balcao/devolucoes')
+      .send({ codigos: [furadeira.codigo], devolvidoPorMatricula: '1001', justificativa: 'Digital não reconhecida' });
+    const [mov] = await movimentos(res.body.operacaoId);
+
+    expect(mov.assinatura).toMatchObject({ tipo: 'recebimento', metodo: 'justificativa', justificativa: 'Digital não reconhecida' });
   });
 });

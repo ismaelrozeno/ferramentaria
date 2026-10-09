@@ -20,6 +20,18 @@ describe('Cadastro de colaborador', () => {
     });
   });
 
+  it('cadastro manual guarda função e mão de obra (ou nada, se não informadas)', async () => {
+    const completo = await api()
+      .post('/api/colaboradores')
+      .send({ ...maria, funcao: 'Eletricista', maoDeObra: 'direta' });
+    const simples = await api().post('/api/colaboradores').send({ matricula: '1002', nome: 'João Lima', maoDeObra: null });
+    const errado = await api().post('/api/colaboradores').send({ matricula: '1003', nome: 'Ana', maoDeObra: 'terceira' });
+
+    expect(completo.body).toMatchObject({ funcao: 'Eletricista', maoDeObra: 'direta', ativo: true });
+    expect(simples.body).toMatchObject({ funcao: '', maoDeObra: null, equipe: '' });
+    expect(errado.status).toBe(400);
+  });
+
   it('não repete matrícula', async () => {
     await api().post('/api/colaboradores').send(maria);
     const repetido = await api().post('/api/colaboradores').send({ ...maria, nome: 'Outra Pessoa' });
@@ -136,6 +148,51 @@ describe('Importação de colaboradores', () => {
     expect(res.body.erros).toEqual([{ linha: 3, mensagem: expect.stringContaining('linha 2') }]);
     const lista = await api().get('/api/colaboradores');
     expect(lista.body[0].nome).toBe('Maria Souza');
+  });
+
+  it('traz função, mão de obra e situação da planilha (inativo já entra desativado)', async () => {
+    const res = await api()
+      .post('/api/colaboradores/importacao')
+      .send({
+        linhas: [
+          { ...maria, funcao: 'Eletricista', maoDeObra: 'direta', ativo: true },
+          { matricula: '1002', nome: 'João Lima', funcao: 'Analista', maoDeObra: 'indireta', ativo: false },
+        ],
+      });
+
+    expect(res.body).toMatchObject({ criados: 2, erros: [] });
+    const lista = (await api().get('/api/colaboradores')).body;
+    expect(lista.find((c) => c.matricula === '1001')).toMatchObject({ funcao: 'Eletricista', maoDeObra: 'direta', ativo: true });
+    expect(lista.find((c) => c.matricula === '1002')).toMatchObject({ funcao: 'Analista', maoDeObra: 'indireta', ativo: false });
+  });
+
+  it('situação "inativo" na planilha desativa quem já existe; coluna ausente não apaga função nem equipe', async () => {
+    await api().post('/api/colaboradores').send({ ...maria, funcao: 'Eletricista' });
+
+    const desativa = await api()
+      .post('/api/colaboradores/importacao')
+      .send({ linhas: [{ matricula: '1001', nome: 'Maria Souza', ativo: false }] });
+
+    expect(desativa.body).toMatchObject({ atualizados: 1 });
+    const [colaborador] = (await api().get('/api/colaboradores')).body;
+    expect(colaborador).toMatchObject({ ativo: false, equipe: 'Elétrica', funcao: 'Eletricista' });
+  });
+
+  it('situação ou mão de obra com valor estranho viram erro da linha', async () => {
+    const res = await api()
+      .post('/api/colaboradores/importacao')
+      .send({
+        linhas: [
+          { linha: 2, ...maria, ativo: 'talvez' },
+          { linha: 3, matricula: '1002', nome: 'João Lima', maoDeObra: 'terceirizada' },
+        ],
+      });
+
+    expect(res.body.criados).toBe(0);
+    expect(res.body.erros).toEqual([
+      { linha: 2, mensagem: expect.stringMatching(/situação/i) },
+      { linha: 3, mensagem: expect.stringMatching(/mão de obra/i) },
+    ]);
   });
 
   it('importa mais de 400 de uma vez (vários lotes)', async () => {

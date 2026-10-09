@@ -72,7 +72,9 @@ function IdentificarColaborador({ acao, aoIdentificar }) {
   return (
     <>
       <p className="texto-apoio">
-        Peça para o colaborador posicionar o dedo no leitor.
+        {acao === "devolver"
+          ? "A digital de quem entrega é a assinatura de recebimento. Pode ser outra pessoa, não só quem retirou."
+          : "A digital do colaborador é a assinatura de retirada."}
       </p>
       <CapturaDigital aoLer={pelaDigital} />
       <div>

@@ -23,7 +23,9 @@ const ciclo = async (matricula, ferramenta, { atrasada = false } = {}) => {
     .post('/api/balcao/retiradas')
     .send({ matricula, justificativa: 'Leitor com defeito', prazoDevolucao: '2099-12-31', itens: [{ codigo: ferramenta.codigo }] });
   if (atrasada) await db.collection('ferramentas').doc(ferramenta.id).update({ prazoDevolucao: '2000-01-01' });
-  return api().post('/api/balcao/devolucoes').send({ codigos: [ferramenta.codigo] });
+  return api()
+    .post('/api/balcao/devolucoes')
+    .send({ codigos: [ferramenta.codigo], devolvidoPorMatricula: matricula, justificativa: 'Leitor com defeito' });
 };
 
 const colaborador = async (matricula) => (await db.collection('colaboradores').doc(matricula).get()).data();
@@ -104,7 +106,11 @@ describe('Pontos pela devolução', () => {
         justificativa: 'Leitor com defeito',
         itens: [{ codigo: ferramentas[0].codigo }, { codigo: ferramentas[1].codigo }],
       });
-    const res = await api().post('/api/balcao/devolucoes').send({ codigos: [ferramentas[0].codigo, ferramentas[1].codigo] });
+    const res = await api().post('/api/balcao/devolucoes').send({
+      codigos: [ferramentas[0].codigo, ferramentas[1].codigo],
+      devolvidoPorMatricula: '1001',
+      justificativa: 'Leitor com defeito',
+    });
 
     expect(res.body.itens.map((i) => i.xp)).toEqual([10, 10]);
     expect(await colaborador('1001')).toMatchObject({ xp: 20, sequencia: 2 });

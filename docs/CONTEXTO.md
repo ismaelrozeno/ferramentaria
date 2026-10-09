@@ -115,9 +115,17 @@ npx firebase deploy --only functions,hosting,firestore --project ferramentaria-6
 | Ranking: pontos pela devolução (10 no prazo, 3 atrasada, bônus a cada 5 seguidas), ligas por XP, `/ranking` e painel público `/painel` | pronto, ainda não publicado |
 | Configurações: tema claro/escuro/sistema, cor principal (verde, vermelho, azul, rosa), fundo, ícones do fundo, posição do menu (esquerda, direita, topo, base), link de troca de senha por e-mail | pronto, ainda não publicado |
 | Lixeira e exclusão (itens, colaboradores, categorias, locais, usuários), liga/desliga em Configurações, restaurar e apagar de vez | pronto, ainda não publicado |
-| 139 testes automáticos da API | passando |
+| 144 testes automáticos da API | passando |
+
+## Assinatura por digital (decisão)
+
+- A digital é uma **assinatura**: de retirada (quem leva) e de recebimento (quem entrega na devolução). É colhida no início da operação e já identifica a pessoa.
+- Qualquer pessoa pode assinar a devolução de uma ferramenta que está no nome de outra; os pontos vão para quem retirou.
+- Toda devolução exige assinatura (digital, ou nome + motivo). Cada movimentação guarda `assinatura: { tipo: retirada|recebimento, metodo: biometria|justificativa, matricula, nome, justificativa }`. Sem comprovante impresso; só o histórico.
 
 ## Aparência (decisões)
+
+- Guia completo de cores, tipografia, componentes e regras visuais: `docs/DESIGN-SYSTEM.md`.
 
 - Preferências ficam em `usuarios/{uid}.preferencias` (por usuário) e em `localStorage['ferrum.aparencia']` (evita piscar o tema errado; script em `frontend/index.html`).
 - Cores só por presets em `frontend/src/styles/tokens.css` (atributos `data-tema/acento/fundo/icones/menu` no `<html>`). `--primary` é só preenchimento (texto sobre ele é `--on-primary`, preto); `--accent` é a cor para texto/ícones sobre o fundo. Todo preset novo precisa passar WCAG 4.5:1 (texto) em todos os fundos.

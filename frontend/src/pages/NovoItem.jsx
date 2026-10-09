@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link, useNavigate, useSearchParams } from 'react-router'
 import { api } from '../services/api.js'
 import { paraCentavos } from '../utils/formatar.js'
 import { UNIDADES } from '../utils/rotulos.js'
@@ -51,7 +51,9 @@ function montarCorpo(form) {
 function NovoItem() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const [form, setForm] = useState(inicial)
+  const [params] = useSearchParams()
+  // Vindo de Categorias e locais com uma categoria recém-criada, ela já vem escolhida.
+  const [form, setForm] = useState(() => ({ ...inicial, categoriaId: params.get('categoria') ?? '' }))
   const mudar = (campo) => (e) => setForm((atual) => ({ ...atual, [campo]: e.target.value }))
 
   const categorias = useQuery({ queryKey: ['categorias'], queryFn: () => api.get('/categorias') })
@@ -79,7 +81,7 @@ function NovoItem() {
         <div className="card estado-vazio-grande">
           <h2>Cadastre uma categoria primeiro</h2>
           <p>Todo item pertence a uma categoria, e a sigla dela entra no código (FER-ELE-0001).</p>
-          <Link to="/cadastros" className="botao botao-primario">
+          <Link to="/cadastros?depois=novo-item" className="botao botao-primario">
             Ir para categorias
           </Link>
         </div>

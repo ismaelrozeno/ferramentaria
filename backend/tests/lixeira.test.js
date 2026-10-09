@@ -199,7 +199,7 @@ describe('Lixeira de colaboradores', () => {
     await api()
       .post('/api/balcao/retiradas')
       .send({ matricula: '1001', justificativa: 'Leitor com defeito', itens: [{ codigo: furadeira.codigo }] });
-    await api().post('/api/balcao/devolucoes').send({ codigos: [furadeira.codigo] });
+    await api().post('/api/balcao/devolucoes').send({ codigos: [furadeira.codigo], devolvidoPorMatricula: '1001', justificativa: 'Leitor com defeito' });
 
     await excluir('colaboradores', '1001');
     await apagar('colaboradores', '1001');

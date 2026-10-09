@@ -32,7 +32,7 @@ async function importar(req, res) {
 
   linhas.forEach((bruta, indice) => {
     const linha = Number.isInteger(bruta?.linha) ? bruta.linha : indice + 1;
-    const resultado = schemas.criarColaborador.safeParse(bruta);
+    const resultado = schemas.linhaImportacao.safeParse(bruta);
     if (resultado.success) {
       validas.push({ linha, ...resultado.data });
     } else {

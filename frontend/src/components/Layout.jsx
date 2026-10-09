@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Outlet, useLocation } from 'react-router'
+import { useEffect, useState } from 'react'
+import { Outlet, useLocation, useNavigationType } from 'react-router'
 import BarraProgresso from './BarraProgresso.jsx'
 import BotaoVoltar from './BotaoVoltar.jsx'
 import FundoOficina from './FundoOficina.jsx'
@@ -9,8 +9,15 @@ import Menu from './Menu.jsx'
 
 function Layout() {
   const [menuAberto, setMenuAberto] = useState(false)
-  const { pathname } = useLocation()
+  const { key } = useLocation()
+  const tipoNavegacao = useNavigationType()
   const fecharMenu = () => setMenuAberto(false)
+
+  // Cada clique no menu abre a página do zero (sem busca/filtros antigos), mesmo já estando nela,
+  // e começa do topo. Voltar/avançar do navegador mantém a rolagem que o navegador guardou.
+  useEffect(() => {
+    if (tipoNavegacao !== 'POP') window.scrollTo(0, 0)
+  }, [key, tipoNavegacao])
 
   return (
     <div className="app">
@@ -40,7 +47,7 @@ function Layout() {
       <main className="conteudo" id="conteudo">
         <div className="conteudo-interno">
           <BotaoVoltar />
-          <div key={pathname} className="transicao-pagina">
+          <div key={key} className="transicao-pagina">
             <Outlet />
           </div>
         </div>

@@ -8,6 +8,7 @@ import EtiquetaStatus from '../components/EtiquetaStatus.jsx'
 import { useAuth } from '../contexto/auth.js'
 import { api } from '../services/api.js'
 import { formatarData, formatarMoeda } from '../utils/formatar.js'
+import { textoAssinatura } from '../utils/balcao.js'
 import { MOVIMENTACAO, ORIGEM, TIPO_ITEM, UNIDADES } from '../utils/rotulos.js'
 import Esqueleto from '../components/Esqueleto.jsx'
 
@@ -162,6 +163,7 @@ function ItemDetalhe() {
                   <th>Movimentação</th>
                   <th>Quantidade</th>
                   <th>Registrado por</th>
+                  <th>Assinatura</th>
                   <th>Observação</th>
                 </tr>
               </thead>
@@ -174,6 +176,9 @@ function ItemDetalhe() {
                       {mov.quantidade}
                     </td>
                     <td data-rotulo="Registrado por">{mov.usuarioNome}</td>
+                    <td data-rotulo="Assinatura" className={mov.assinatura ? undefined : 'sem-valor'}>
+                      {textoAssinatura(mov.assinatura)}
+                    </td>
                     <td data-rotulo="Observação" className={mov.observacao ? undefined : 'sem-valor'}>
                       {mov.observacao ?? '—'}
                     </td>
